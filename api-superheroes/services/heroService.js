@@ -1,7 +1,13 @@
 import heroRepository from '../repositories/heroRepository.js';
+import petService from './petService.js';
 
 async function getAllHeroes() {
-  return await heroRepository.getHeroes();
+  const heroes = await heroRepository.getHeroes();
+  const pets = await petService.getAllPets();
+  return heroes.map(hero => {
+    const pet = pets.find(p => p.adoptedBy === hero.id) || null;
+    return { ...hero, pet };
+  });
 }
 
 async function addHero(hero) {
