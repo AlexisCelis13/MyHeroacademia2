@@ -97,4 +97,90 @@ router.post('/pets/:id/desadoptar', async (req, res) => {
   }
 });
 
+// ENDPOINTS DEL JUEGO DE MASCOTAS
+
+// Obtener el estado de la mascota
+router.get('/pets/:id/estado', async (req, res) => {
+  try {
+    const estado = await petService.getEstado(req.params.id);
+    res.json(estado);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Alimentar mascota
+router.put('/pets/:id/alimentar', async (req, res) => {
+  try {
+    const pet = await petService.alimentar(req.params.id);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Pasear mascota
+router.put('/pets/:id/pasear', async (req, res) => {
+  try {
+    const pet = await petService.pasear(req.params.id);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Jugar con mascota
+router.put('/pets/:id/jugar', async (req, res) => {
+  try {
+    const pet = await petService.jugar(req.params.id);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Curar mascota
+router.put('/pets/:id/curar', async (req, res) => {
+  try {
+    const pet = await petService.curar(req.params.id);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Vestir mascota
+router.put('/pets/:id/vestir', async (req, res) => {
+  const { item } = req.body;
+  if (!item) {
+    return res.status(400).json({ error: 'Debes especificar el item a vestir.' });
+  }
+  try {
+    const pet = await petService.vestir(req.params.id, item);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Historial de acciones (opcional)
+router.get('/pets/:id/historial', async (req, res) => {
+  try {
+    const historial = await petService.getHistorial(req.params.id);
+    res.json(historial);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Revivir mascota
+router.put('/pets/:id/revivir', async (req, res) => {
+  try {
+    const pet = await petService.revivir(req.params.id);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default router; 

@@ -71,4 +71,15 @@ router.post('/heroes/:id/enfrentar', async (req, res) => {
   }
 });
 
+// ENDPOINT PARA VER MASCOTAS DE UN SUPERHÉROE
+router.get('/heroes/:id/mascotas', async (req, res) => {
+  try {
+    const pets = await (await import('../services/petService.js')).default.getAllPets();
+    const mascota = pets.find(pet => pet.adoptedBy === parseInt(req.params.id)) || null;
+    res.json(mascota);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
