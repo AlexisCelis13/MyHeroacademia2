@@ -1,44 +1,35 @@
-import fs from 'fs-extra';
-import Pet from '../models/petModel.js';
-
-const filePath = './pets.json';
+import Pet from '../models/petSchema.js';
 
 async function getPets() {
-  try {
-    const data = await fs.readJson(filePath);
-    return data.map(pet => new Pet(
-      pet.id,
-      pet.name,
-      pet.alias,
-      pet.city,
-      pet.team,
-      pet.adoptedBy,
-      pet.felicidad !== undefined ? pet.felicidad : 100,
-      pet.hambre !== undefined ? pet.hambre : 0,
-      pet.enfermedad !== undefined ? pet.enfermedad : null,
-      pet.itemsCustom !== undefined ? pet.itemsCustom : [],
-      pet.viva !== undefined ? pet.viva : true,
-      pet.historial !== undefined ? pet.historial : [],
-      pet.vida !== undefined ? pet.vida : 100,
-      pet.enfermoDesde !== undefined ? pet.enfermoDesde : null,
-      pet.recuperandoDesde !== undefined ? pet.recuperandoDesde : null,
-      pet.decaimientoDesde !== undefined ? pet.decaimientoDesde : null
-    ));
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return await Pet.find();
 }
 
-async function savePets(pets) {
-  try {
-    await fs.writeJson(filePath, pets);
-  } catch (error) {
-    console.error(error);
-  }
+async function getPetById(id) {
+  return await Pet.findOne({ id: parseInt(id) });
+}
+
+async function addPet(pet) {
+  // Asigna un id incremental
+  const lastPet = await Pet.findOne().sort({ id: -1 });
+  const newId = lastPet ? lastPet.id + 1 : 1;
+  pet.id = newId;
+  const newPet = new Pet(pet);
+  await newPet.save();
+  return newPet;
+}
+
+async function updatePet(id, updatedPet) {
+  return await Pet.findOneAndUpdate({ id: parseInt(id) }, updatedPet, { new: true });
+}
+
+async function deletePet(id) {
+  return await Pet.deleteOne({ id: parseInt(id) });
 }
 
 export default {
   getPets,
-  savePets
+  getPetById,
+  addPet,
+  updatePet,
+  deletePet
 }; 

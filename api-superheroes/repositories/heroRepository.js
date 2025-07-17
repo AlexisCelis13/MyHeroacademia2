@@ -1,27 +1,35 @@
-import fs from 'fs-extra';
-import Hero from '../models/heroModel.js';
-
-const filePath = './superheroes.json'; // Verifica la ruta según tu estructura
+import Hero from '../models/heroSchema.js';
 
 async function getHeroes() {
-  try {
-    const data = await fs.readJson(filePath);
-    return data.map(hero => new Hero(hero.id, hero.name, hero.alias, hero.city, hero.team));
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return await Hero.find();
 }
 
-async function saveHeroes(heroes) {
-  try {
-    await fs.writeJson(filePath, heroes);
-  } catch (error) {
-    console.error(error);
-  }
+async function getHeroById(id) {
+  return await Hero.findOne({ id: parseInt(id) });
+}
+
+async function addHero(hero) {
+  // Asigna un id incremental
+  const lastHero = await Hero.findOne().sort({ id: -1 });
+  const newId = lastHero ? lastHero.id + 1 : 1;
+  hero.id = newId;
+  const newHero = new Hero(hero);
+  await newHero.save();
+  return newHero;
+}
+
+async function updateHero(id, updatedHero) {
+  return await Hero.findOneAndUpdate({ id: parseInt(id) }, updatedHero, { new: true });
+}
+
+async function deleteHero(id) {
+  return await Hero.deleteOne({ id: parseInt(id) });
 }
 
 export default {
   getHeroes,
-  saveHeroes
+  getHeroById,
+  addHero,
+  updateHero,
+  deleteHero
 };

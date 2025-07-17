@@ -1,6 +1,5 @@
 import petRepository from '../repositories/petRepository.js';
 
-
 async function getAllPets() {
   return await petRepository.getPets();
 }
@@ -9,35 +8,15 @@ async function addPet(pet) {
   if (!pet.name || !pet.alias) {
     throw new Error('La mascota debe tener un nombre y un alias.');
   }
-  const pets = await petRepository.getPets();
-  const newId = pets.length > 0 ? Math.max(...pets.map(p => p.id)) + 1 : 1;
-  const newPet = { ...pet, id: newId };
-  pets.push(newPet);
-  await petRepository.savePets(pets);
-  return newPet;
+  return await petRepository.addPet(pet);
 }
 
 async function updatePet(id, updatedPet) {
-  const pets = await petRepository.getPets();
-  const index = pets.findIndex(pet => pet.id === parseInt(id));
-  if (index === -1) {
-    throw new Error('Mascota no encontrada');
-  }
-  delete updatedPet.id;
-  pets[index] = { ...pets[index], ...updatedPet };
-  await petRepository.savePets(pets);
-  return pets[index];
+  return await petRepository.updatePet(id, updatedPet);
 }
 
 async function deletePet(id) {
-  const pets = await petRepository.getPets();
-  const index = pets.findIndex(pet => pet.id === parseInt(id));
-  if (index === -1) {
-    throw new Error('Mascota no encontrada');
-  }
-  const filteredPets = pets.filter(pet => pet.id !== parseInt(id));
-  await petRepository.savePets(filteredPets);
-  return { message: 'Mascota eliminada' };
+  return await petRepository.deletePet(id);
 }
 
 async function findPetsByCity(city) {
@@ -61,30 +40,29 @@ async function adoptPet(petId, heroId) {
   if (alreadyAdopted) {
     throw new Error('Este superhéroe ya tiene una mascota.');
   }
-  const index = pets.findIndex(pet => pet.id === parseInt(petId));
-  if (index === -1) {
+  const pet = await petRepository.getPetById(petId);
+  if (!pet) {
     throw new Error('Mascota no encontrada');
   }
-  if (pets[index].adoptedBy !== null) {
+  if (pet.adoptedBy !== null) {
     throw new Error('La mascota ya está adoptada');
   }
-  pets[index].adoptedBy = parseInt(heroId);
-  await petRepository.savePets(pets);
-  return pets[index];
+  pet.adoptedBy = parseInt(heroId);
+  await petRepository.updatePet(petId, pet);
+  return pet;
 }
 
 async function unadoptPet(petId, heroId) {
-  const pets = await petRepository.getPets();
-  const index = pets.findIndex(pet => pet.id === parseInt(petId));
-  if (index === -1) {
+  const pet = await petRepository.getPetById(petId);
+  if (!pet) {
     throw new Error('Mascota no encontrada');
   }
-  if (pets[index].adoptedBy !== parseInt(heroId)) {
+  if (pet.adoptedBy !== parseInt(heroId)) {
     throw new Error('Solo el héroe que adoptó la mascota puede desadoptarla');
   }
-  pets[index].adoptedBy = null;
-  await petRepository.savePets(pets);
-  return pets[index];
+  pet.adoptedBy = null;
+  await petRepository.updatePet(petId, pet);
+  return pet;
 }
 
 // --- LÓGICA DEL JUEGO DE MASCOTAS ---
@@ -171,14 +149,14 @@ function decaimientoFelicidadVida(pet) {
 }
 
 // Obtener estado de la mascota
-async function getEstado(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+async function getEstado(id, full = false) {
+  const pet = await petRepository.getPetById(id);
   if (!pet) throw new Error('Mascota no encontrada');
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
+  if (full) return pet;
   return {
     felicidad: pet.felicidad,
     hambre: pet.hambre,
@@ -191,8 +169,7 @@ async function getEstado(id) {
 
 // Alimentar mascota
 async function alimentar(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -218,14 +195,13 @@ async function alimentar(id) {
     pet.decaimientoDesde = Date.now(); // reset decaimiento al subir felicidad
   }
   if (pet.felicidad === 0) pet.viva = false;
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
 // Pasear mascota
 async function pasear(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -245,14 +221,13 @@ async function pasear(id) {
     pet.recuperandoDesde = null;
   }
   if (pet.felicidad === 0) pet.viva = false;
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
 // Jugar con mascota
 async function jugar(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -272,14 +247,13 @@ async function jugar(id) {
     pet.recuperandoDesde = null;
   }
   if (pet.felicidad === 0) pet.viva = false;
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
 // Curar mascota
 async function curar(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -291,14 +265,13 @@ async function curar(id) {
   pet.vida = 100;
   pet.recuperandoDesde = Date.now();
   pet.historial.push('Curada');
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
 // Vestir mascota
 async function vestir(id, item) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -306,14 +279,13 @@ async function vestir(id, item) {
   if (!pet.viva) throw new Error('La mascota está muerta');
   pet.itemsCustom.push(item);
   pet.historial.push(`Vestida con ${item}`);
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
 // Obtener historial de acciones
 async function getHistorial(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
@@ -323,8 +295,7 @@ async function getHistorial(id) {
 
 // Revivir mascota
 async function revivir(id) {
-  const pets = await petRepository.getPets();
-  const pet = pets.find(p => p.id === parseInt(id));
+  const pet = await petRepository.getPetById(id);
   if (!pet) throw new Error('Mascota no encontrada');
   if (pet.viva) throw new Error('La mascota ya está viva');
   pet.felicidad = 80;
@@ -336,7 +307,7 @@ async function revivir(id) {
   pet.decaimientoDesde = Date.now();
   pet.viva = true;
   pet.historial.push('Tu mascota a revivido por las esferas del dragon');
-  await petRepository.savePets(pets);
+  await petRepository.updatePet(id, pet);
   return pet;
 }
 
