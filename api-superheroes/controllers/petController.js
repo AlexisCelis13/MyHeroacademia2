@@ -49,8 +49,8 @@ router.put('/pets/:id', async (req, res) => {
 
 router.delete('/pets/:id', async (req, res) => {
   try {
-    const result = await petService.deletePet(req.params.id);
-    res.json(result);
+    await petService.deletePet(req.params.id);
+    res.status(204).send();
   } catch (error) {
     res.status(404).json({ error: error.message });
   }

@@ -46,8 +46,8 @@ router.put('/heroes/:id', async (req, res) => {
 
 router.delete('/heroes/:id', async (req, res) => {
   try {
-    const result = await heroService.deleteHero(req.params.id);
-    res.json(result);
+    await heroService.deleteHero(req.params.id);
+    res.status(204).send();
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
