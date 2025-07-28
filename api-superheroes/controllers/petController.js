@@ -74,26 +74,50 @@ router.post('/pets/:id/enfrentar', async (req, res) => {
   }
 });
 
-router.post('/pets/:id/adoptar', async (req, res) => {
+router.post('/pets/:id/adoptar', requireAuth, async (req, res) => {
   const heroId = req.body.heroId;
   if (!heroId) {
     return res.status(400).json({ error: 'Se requiere el id del héroe para adoptar.' });
   }
+  
   try {
+    // Verificar que el usuario existe
+    const user = await userRepository.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    // Adoptar la mascota (vincular al héroe)
     const pet = await petService.adoptPet(req.params.id, heroId);
+    
+    // Vincular la mascota al usuario
+    await userRepository.setMascotaId(req.userId, parseInt(req.params.id));
+    
     res.json(pet);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-router.post('/pets/:id/desadoptar', async (req, res) => {
+router.post('/pets/:id/desadoptar', requireAuth, async (req, res) => {
   const heroId = req.body.heroId;
   if (!heroId) {
     return res.status(400).json({ error: 'Se requiere el id del héroe para desadoptar.' });
   }
+  
   try {
+    // Verificar que el usuario existe
+    const user = await userRepository.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    // Desadoptar la mascota (desvincular del héroe)
     const pet = await petService.unadoptPet(req.params.id, heroId);
+    
+    // Desvincular la mascota del usuario
+    await userRepository.setMascotaId(req.userId, null);
+    
     res.json(pet);
   } catch (error) {
     res.status(400).json({ error: error.message });
