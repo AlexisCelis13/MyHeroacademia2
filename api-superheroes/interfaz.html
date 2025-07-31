@@ -267,6 +267,9 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            background: rgba(255, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
         }
 
         .user-hero-info {
@@ -274,6 +277,10 @@
             gap: 1rem;
             font-size: 0.875rem;
             color: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .info-label {
@@ -906,6 +913,7 @@
                     </div>
                 </div>
                 <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
+                <button class="logout-button" onclick="testUpdateNames()" style="background: linear-gradient(135deg, #10b981, #059669); margin-left: 1rem;">Test Nombres</button>
             </div>
 
             <div class="pet-interface-grid">
@@ -1052,7 +1060,7 @@
 
                 if (response.ok) {
                     token = data.token;
-                    currentUser = { username };
+            currentUser = { username };
                     
                     console.log('Login response:', data); // Debug log
                     
@@ -1080,7 +1088,7 @@
                     } else {
                         console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
                         // El usuario no tiene mascota, mostrar selección de héroes
-                        showHeroSelection();
+            showHeroSelection();
                     }
                 } else {
                     alert('Error: ' + data.error);
@@ -1109,7 +1117,7 @@
 
                 if (response.ok) {
                     token = data.token;
-                    currentUser = { username, email };
+            currentUser = { username, email };
                     
                     console.log('Register response:', data); // Debug log
                     
@@ -1137,7 +1145,7 @@
                     } else {
                         console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
                         // El usuario no tiene mascota, mostrar selección de héroes
-                        showHeroSelection();
+            showHeroSelection();
                     }
                 } else {
                     alert('Error: ' + data.error);
@@ -1228,7 +1236,7 @@
 
                 if (response.ok) {
                     currentHero = { id: data.id, name, alias, city };
-                    showPetSelection();
+            showPetSelection();
                 } else {
                     alert('Error: ' + (data.error || 'Error al crear héroe'));
                 }
@@ -1311,7 +1319,7 @@
                     console.log('Mascota adoptada:', adoptedPet);
                     console.log('currentHero durante adopción:', currentHero);
                     
-                    currentPet = {
+            currentPet = {
                         id: adoptedPet.id,
                         name: adoptedPet.name,
                         type: adoptedPet.alias || 'Sin tipo',
@@ -1377,8 +1385,8 @@
                 const createdPet = await createResponse.json();
 
                 if (createResponse.ok) {
-                    // Now adopt the created pet
-                    const adoptResponse = await fetch(`${API_BASE}/api/pets/${createdPet.id}/adoptar`, {
+                    // Now adopt the created pet - use _id instead of id
+                    const adoptResponse = await fetch(`${API_BASE}/api/pets/${createdPet._id}/adoptar`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1390,9 +1398,9 @@
                     if (adoptResponse.ok) {
                         const adoptedPet = await adoptResponse.json();
                         console.log('Mascota creada y adoptada:', adoptedPet);
-                        
-                        currentPet = {
-                            id: adoptedPet.id,
+            
+            currentPet = {
+                            id: adoptedPet._id,
                             name: adoptedPet.name,
                             type: adoptedPet.alias || 'Sin tipo',
                             color: 'Normal',
@@ -1446,8 +1454,26 @@
             
             // Mostrar nombre del superhéroe si está disponible, sino usar el nombre del usuario
             const heroName = currentHero ? currentHero.name : currentUser.username;
-            if (heroNameInterface) heroNameInterface.textContent = heroName;
-            if (userNameInterface) userNameInterface.textContent = currentUser.username;
+            console.log('Actualizando elementos HTML:');
+            console.log('- heroNameInterface:', heroNameInterface);
+            console.log('- userNameInterface:', userNameInterface);
+            console.log('- heroName:', heroName);
+            console.log('- currentUser.username:', currentUser.username);
+            
+            if (heroNameInterface) {
+                heroNameInterface.textContent = heroName;
+                console.log('heroNameInterface.textContent actualizado a:', heroName);
+            } else {
+                console.log('ERROR: heroNameInterface es null');
+            }
+            
+            if (userNameInterface) {
+                userNameInterface.textContent = currentUser.username;
+                console.log('userNameInterface.textContent actualizado a:', currentUser.username);
+            } else {
+                console.log('ERROR: userNameInterface es null');
+            }
+            
             if (petDisplayName) petDisplayName.textContent = currentPet.name;
             if (petDisplayType) petDisplayType.textContent = `${currentPet.type} ${currentPet.color}`;
             
@@ -1523,13 +1549,13 @@
                             alias: petData.superheroe.alias
                         };
                     }
-                    
-                    // Update interface with pet data
-                    document.getElementById('petInterfaceName').textContent = currentPet.name;
-                    document.getElementById('heroNameInterface').textContent = currentHero.name;
-                    document.getElementById('userNameInterface').textContent = currentUser.username;
-                    document.getElementById('petDisplayName').textContent = currentPet.name;
-                    document.getElementById('petDisplayType').textContent = `${currentPet.type} ${currentPet.color}`;
+            
+            // Update interface with pet data
+            document.getElementById('petInterfaceName').textContent = currentPet.name;
+            document.getElementById('heroNameInterface').textContent = currentHero.name;
+            document.getElementById('userNameInterface').textContent = currentUser.username;
+            document.getElementById('petDisplayName').textContent = currentPet.name;
+            document.getElementById('petDisplayType').textContent = `${currentPet.type} ${currentPet.color}`;
                     
                     // Initialize pet health system
                     // Sync sickness state from backend
@@ -1547,9 +1573,9 @@
                         currentPet.isDead = false;
                         currentPet.viva = true;
                     }
-
-                    updatePetStats();
-                    updatePetExpression();
+            
+            updatePetStats();
+            updatePetExpression();
                     updatePetAppearance();
                 } else {
                     const errorData = await response.json();
@@ -1584,32 +1610,32 @@
                     'Authorization': `Bearer ${token}`
                 };
 
-                switch (action) {
-                    case 'alimentar':
+            switch (action) {
+                case 'alimentar':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/alimentar`, {
                             method: 'PUT',
                             headers: headers
                         });
-                        break;
-                    case 'jugar':
+                    break;
+                case 'jugar':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/jugar`, {
                             method: 'PUT',
                             headers: headers
                         });
-                        break;
-                    case 'curar':
+                    break;
+                case 'curar':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/curar`, {
                             method: 'PUT',
                             headers: headers
                         });
-                        break;
-                    case 'pasear':
+                    break;
+                case 'pasear':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/pasear`, {
                             method: 'PUT',
                             headers: headers
                         });
-                        break;
-                    case 'vestir':
+                    break;
+                case 'vestir':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/vestir`, {
                             method: 'PUT',
                             headers: {
@@ -1618,13 +1644,13 @@
                             },
                             body: JSON.stringify({ item: 'collar' })
                         });
-                        break;
-                    case 'revivir':
+                    break;
+                case 'revivir':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/revivir`, {
                             method: 'PUT',
                             headers: headers
                         });
-                        break;
+                    break;
                 }
 
                 if (response.ok) {
@@ -1661,10 +1687,10 @@
                         currentPet.isDead = false;
                         currentPet.viva = true;
                         showRevivalAlert();
-                    }
-                    
-                    updatePetStats();
-                    updatePetExpression();
+            }
+            
+            updatePetStats();
+            updatePetExpression();
                     updatePetAppearance();
                     
                     // Start automatic health decrease for sick pets
@@ -2120,6 +2146,38 @@
             
             // Mostrar mensaje de confirmación
             alert('Sesión cerrada exitosamente');
+        }
+
+        function testUpdateNames() {
+            console.log('=== TEST UPDATE NAMES ===');
+            console.log('currentUser:', currentUser);
+            console.log('currentHero:', currentHero);
+            console.log('currentPet:', currentPet);
+            
+            const heroNameInterface = document.getElementById('heroNameInterface');
+            const userNameInterface = document.getElementById('userNameInterface');
+            
+            console.log('heroNameInterface:', heroNameInterface);
+            console.log('userNameInterface:', userNameInterface);
+            
+            if (heroNameInterface) {
+                heroNameInterface.textContent = 'TEST HERO NAME';
+                console.log('heroNameInterface.textContent actualizado a: TEST HERO NAME');
+            }
+            
+            if (userNameInterface) {
+                userNameInterface.textContent = 'TEST USER NAME';
+                console.log('userNameInterface.textContent actualizado a: TEST USER NAME');
+            }
+            
+            // Verificar si los elementos son visibles
+            const userHeroInfo = document.querySelector('.user-hero-info');
+            console.log('user-hero-info element:', userHeroInfo);
+            if (userHeroInfo) {
+                console.log('user-hero-info display:', window.getComputedStyle(userHeroInfo).display);
+                console.log('user-hero-info visibility:', window.getComputedStyle(userHeroInfo).visibility);
+                console.log('user-hero-info opacity:', window.getComputedStyle(userHeroInfo).opacity);
+            }
         }
     </script>
 </body>
