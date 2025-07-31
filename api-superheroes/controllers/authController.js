@@ -26,21 +26,51 @@ router.post('/auth/register', async (req, res) => {
     pet = await petRepository.getPetById(mascotaId);
     if (!pet) return res.status(400).json({ error: 'Mascota no encontrada' });
     if (pet.adoptedBy) return res.status(400).json({ error: 'Mascota ya tiene dueño' });
-    pet.adoptedBy = user._id;
+    pet.adoptedBy = user.id || user._id;
     await petRepository.updatePet(pet.id, pet);
-    await userRepository.setMascotaId(user._id, pet.id);
+    await userRepository.setMascotaId(user.id || user._id, pet.id);
   } else if (mascotaNueva) {
     // Crear nueva mascota
     pet = await petRepository.addPet(mascotaNueva);
-    pet.adoptedBy = user._id;
+    pet.adoptedBy = user.id || user._id;
     await petRepository.updatePet(pet.id, pet);
-    await userRepository.setMascotaId(user._id, pet.id);
+    await userRepository.setMascotaId(user.id || user._id, pet.id);
   }
   // Si no hay mascotaId ni mascotaNueva, simplemente se crea el usuario sin mascota
 
   // Generar token
   const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '2h' });
-  res.json({ token });
+  
+  // Verificar si el usuario tiene una mascota después del registro
+  let hasPet = false;
+  let petData = null;
+  
+  if (user.mascotaId) {
+    try {
+      const pet = await petRepository.getPetById(user.mascotaId);
+      if (pet) {
+        hasPet = true;
+        petData = {
+          id: pet.id,
+          name: pet.name,
+          alias: pet.alias,
+          vida: pet.vida,
+          felicidad: pet.felicidad,
+          hambre: pet.hambre,
+          enfermedad: pet.enfermedad,
+          viva: pet.viva
+        };
+      }
+    } catch (error) {
+      console.error('Error al obtener mascota del usuario:', error);
+    }
+  }
+  
+  res.json({ 
+    token, 
+    hasPet, 
+    petData 
+  });
 });
 
 // Login
@@ -50,8 +80,38 @@ router.post('/auth/login', async (req, res) => {
   if (!user) return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return res.status(400).json({ error: 'Usuario o contraseña incorrectos' });
+  
+  // Verificar si el usuario tiene una mascota
+  let hasPet = false;
+  let petData = null;
+  
+  if (user.mascotaId) {
+    try {
+      const pet = await petRepository.getPetById(user.mascotaId);
+      if (pet) {
+        hasPet = true;
+        petData = {
+          id: pet.id,
+          name: pet.name,
+          alias: pet.alias,
+          vida: pet.vida,
+          felicidad: pet.felicidad,
+          hambre: pet.hambre,
+          enfermedad: pet.enfermedad,
+          viva: pet.viva
+        };
+      }
+    } catch (error) {
+      console.error('Error al obtener mascota del usuario:', error);
+    }
+  }
+  
   const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '2h' });
-  res.json({ token });
+  res.json({ 
+    token, 
+    hasPet, 
+    petData 
+  });
 });
 
 export default router; 

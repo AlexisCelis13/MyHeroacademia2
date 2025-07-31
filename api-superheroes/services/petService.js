@@ -47,7 +47,18 @@ async function adoptPet(petId, heroId) {
   if (pet.adoptedBy !== null) {
     throw new Error('La mascota ya está adoptada');
   }
+  
+  // Resetear el estado de la mascota al adoptarla
   pet.adoptedBy = parseInt(heroId);
+  pet.vida = 100;
+  pet.felicidad = 100;
+  pet.hambre = 0;
+  pet.enfermedad = null;
+  pet.viva = true;
+  pet.enfermoDesde = null;
+  pet.recuperandoDesde = null;
+  pet.decaimientoDesde = Date.now(); // Resetear el decaimiento
+  
   await petRepository.updatePet(petId, pet);
   return pet;
 }
@@ -118,11 +129,19 @@ function decaimientoFelicidadVida(pet) {
   if (!pet.decaimientoDesde) pet.decaimientoDesde = ahora;
   const msTranscurridos = ahora - pet.decaimientoDesde;
   const intervalos = Math.floor(msTranscurridos / 60000); // cada 60s
+  
+  console.log('=== DECAIMIENTO FELICIDAD VIDA ===');
+  console.log('msTranscurridos:', msTranscurridos, 'intervalos:', intervalos);
+  console.log('Estado antes:', { vida: pet.vida, felicidad: pet.felicidad, viva: pet.viva });
+  
   if (intervalos <= 0) return;
+  
   let felicidadAntes = pet.felicidad;
   if (pet.felicidad > 0) {
     pet.felicidad = Math.max(0, pet.felicidad - 2 * intervalos);
+    console.log(`Felicidad reducida de ${felicidadAntes} a ${pet.felicidad}`);
   }
+  
   // Si felicidad llegó a 0, vida baja de 5 en 5 por cada minuto con felicidad en 0
   if (felicidadAntes > 0 && pet.felicidad === 0) {
     // Ajustar decaimientoDesde al momento en que felicidad llegó a 0
@@ -134,18 +153,24 @@ function decaimientoFelicidadVida(pet) {
     if (intervalosVida > 0) {
       pet.vida = Math.max(0, pet.vida - 5 * intervalosVida);
       pet.decaimientoDesde = pet.decaimientoDesde + intervalosVida * 60000;
+      console.log(`Vida reducida por felicidad 0: ${pet.vida}`);
     }
   } else if (pet.felicidad === 0) {
     // Si ya estaba en 0, solo baja vida
     pet.vida = Math.max(0, pet.vida - 5 * intervalos);
     pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 60000;
+    console.log(`Vida reducida (ya en 0): ${pet.vida}`);
   } else {
     pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 60000;
   }
+  
   if (pet.vida === 0) {
     pet.viva = false;
     pet.historial.push('Murió por falta de felicidad');
+    console.log('Mascota marcada como muerta por vida 0');
   }
+  
+  console.log('Estado después:', { vida: pet.vida, felicidad: pet.felicidad, viva: pet.viva });
 }
 
 // Obtener estado de la mascota
@@ -170,12 +195,34 @@ async function getEstado(id, full = false) {
 // Alimentar mascota
 async function alimentar(id) {
   const pet = await petRepository.getPetById(id);
-  descontarVidaSiEnferma(pet);
-  recuperarVidaSiSana(pet);
-  decaimientoFelicidadVida(pet);
   if (!pet) throw new Error('Mascota no encontrada');
   if (!pet.viva) throw new Error('La mascota está muerta');
   if (pet.enfermedad) throw new Error('La mascota está enferma, primero debes curarla');
+  
+  console.log('=== ALIMENTAR MASCOTA ===');
+  console.log('Estado inicial:', {
+    vida: pet.vida,
+    felicidad: pet.felicidad,
+    hambre: pet.hambre,
+    viva: pet.viva,
+    decaimientoDesde: pet.decaimientoDesde
+  });
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
+  descontarVidaSiEnferma(pet);
+  recuperarVidaSiSana(pet);
+  decaimientoFelicidadVida(pet);
+  
+  console.log('Estado después del decaimiento:', {
+    vida: pet.vida,
+    felicidad: pet.felicidad,
+    hambre: pet.hambre,
+    viva: pet.viva
+  });
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
   if (pet.hambre <= 0) {
     pet.enfermedad = 'Gripa';
     pet.felicidad = Math.max(0, pet.felicidad - 10);
@@ -194,7 +241,21 @@ async function alimentar(id) {
     pet.historial.push('Alimentada');
     pet.decaimientoDesde = Date.now(); // reset decaimiento al subir felicidad
   }
-  if (pet.felicidad === 0) pet.viva = false;
+  
+  console.log('Estado después de alimentar:', {
+    vida: pet.vida,
+    felicidad: pet.felicidad,
+    hambre: pet.hambre,
+    viva: pet.viva
+  });
+  
+  // Solo marcar como muerta si la felicidad llega a 0 después de la acción
+  if (pet.felicidad === 0) {
+    pet.viva = false;
+    pet.historial.push('Murió por falta de felicidad');
+    console.log('Mascota marcada como muerta por felicidad 0');
+  }
+  
   await petRepository.updatePet(id, pet);
   return pet;
 }
@@ -202,13 +263,19 @@ async function alimentar(id) {
 // Pasear mascota
 async function pasear(id) {
   const pet = await petRepository.getPetById(id);
-  descontarVidaSiEnferma(pet);
-  recuperarVidaSiSana(pet);
-  decaimientoFelicidadVida(pet);
   if (!pet) throw new Error('Mascota no encontrada');
   if (!pet.viva) throw new Error('La mascota está muerta');
   if (pet.enfermedad) throw new Error('La mascota está enferma, primero debes curarla');
   if (pet.felicidad >= 100) throw new Error('La mascota ya está al máximo de felicidad');
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
+  descontarVidaSiEnferma(pet);
+  recuperarVidaSiSana(pet);
+  decaimientoFelicidadVida(pet);
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
   pet.felicidad = Math.min(100, pet.felicidad + 10);
   pet.hambre = Math.min(100, pet.hambre + 10);
   pet.historial.push('Paseada');
@@ -220,7 +287,13 @@ async function pasear(id) {
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
   }
-  if (pet.felicidad === 0) pet.viva = false;
+  
+  // Solo marcar como muerta si la felicidad llega a 0 después de la acción
+  if (pet.felicidad === 0) {
+    pet.viva = false;
+    pet.historial.push('Murió por falta de felicidad');
+  }
+  
   await petRepository.updatePet(id, pet);
   return pet;
 }
@@ -228,13 +301,19 @@ async function pasear(id) {
 // Jugar con mascota
 async function jugar(id) {
   const pet = await petRepository.getPetById(id);
-  descontarVidaSiEnferma(pet);
-  recuperarVidaSiSana(pet);
-  decaimientoFelicidadVida(pet);
   if (!pet) throw new Error('Mascota no encontrada');
   if (!pet.viva) throw new Error('La mascota está muerta');
   if (pet.enfermedad) throw new Error('La mascota está enferma, primero debes curarla');
   if (pet.felicidad >= 100) throw new Error('La mascota ya está al máximo de felicidad');
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
+  descontarVidaSiEnferma(pet);
+  recuperarVidaSiSana(pet);
+  decaimientoFelicidadVida(pet);
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
   pet.felicidad = Math.min(100, pet.felicidad + 15);
   pet.hambre = Math.min(100, pet.hambre + 15);
   pet.historial.push('Jugó');
@@ -246,7 +325,13 @@ async function jugar(id) {
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
   }
-  if (pet.felicidad === 0) pet.viva = false;
+  
+  // Solo marcar como muerta si la felicidad llega a 0 después de la acción
+  if (pet.felicidad === 0) {
+    pet.viva = false;
+    pet.historial.push('Murió por falta de felicidad');
+  }
+  
   await petRepository.updatePet(id, pet);
   return pet;
 }
@@ -254,12 +339,18 @@ async function jugar(id) {
 // Curar mascota
 async function curar(id) {
   const pet = await petRepository.getPetById(id);
-  descontarVidaSiEnferma(pet);
-  recuperarVidaSiSana(pet);
-  decaimientoFelicidadVida(pet);
   if (!pet) throw new Error('Mascota no encontrada');
   if (!pet.viva) throw new Error('La mascota está muerta');
   if (!pet.enfermedad) throw new Error('La mascota no está enferma');
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
+  descontarVidaSiEnferma(pet);
+  recuperarVidaSiSana(pet);
+  decaimientoFelicidadVida(pet);
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
   pet.enfermedad = null;
   pet.enfermoDesde = null;
   pet.vida = 100;

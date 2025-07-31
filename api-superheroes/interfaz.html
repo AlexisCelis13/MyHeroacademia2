@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superhéroes & Mascotas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Auth Page Styles */
+        .auth-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #9333ea, #3b82f6, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-description {
+            color: #6b7280;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        /* Hero Selection Styles */
+        .hero-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f97316, #ef4444, #ec4899);
+            padding: 1rem;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-avatar {
+            width: 100%;
+            height: 8rem;
+            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-power {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .hero-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        /* Pet Selection Styles */
+        .pet-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10b981, #14b8a6, #3b82f6);
+            padding: 1rem;
+        }
+
+        .pet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .pet-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .pet-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Pet Interface Styles */
+        .pet-interface {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #9333ea, #7c3aed, #4338ca);
+            padding: 1rem;
+        }
+
+        /* Header with logout button */
+        .pet-interface-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .pet-interface-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .user-hero-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: white;
+        }
+
+        .logout-button {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+
+        .logout-button:active {
+            transform: translateY(0);
+        }
+
+        .pet-interface-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pet-interface-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .pet-interface-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pet-display-card {
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stats-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stats-card, .actions-card {
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Modern Pet Animation Styles */
+        .modern-pet-container {
+            position: relative;
+            width: 192px;
+            height: 192px;
+            margin: 0 auto 2rem;
+            animation: modernFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes modernFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        /* Modern Dragon Styles */
+        .modern-dragon {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dragon-main-body {
+            position: absolute;
+            width: 120px;
+            height: 140px;
+            background: linear-gradient(135deg, #10b981, #059669, #047857);
+            border-radius: 60px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: dragonBreatheModern 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .dragon-modern-head {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #34d399, #10b981);
+            border-radius: 40px;
+            left: 50%;
+            top: 15%;
+            transform: translate(-50%, -50%);
+            animation: dragonNodModern 5s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(52, 211, 153, 0.4);
+        }
+
+        .dragon-eye {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background: #1f2937;
+            border-radius: 50%;
+            top: 35%;
+            animation: modernBlink 4s ease-in-out infinite;
+        }
+
+        .dragon-eye-left { left: 25%; }
+        .dragon-eye-right { right: 25%; }
+
+        .dragon-wing-left, .dragon-wing-right {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 25px 25px 0 25px;
+            top: 25%;
+            animation: modernWingFlap 2s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .dragon-wing-left {
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .dragon-wing-right {
+            right: -10%;
+            transform: scaleX(-1);
+            animation-delay: 0.3s;
+        }
+
+        .dragon-modern-tail {
+            position: absolute;
+            width: 35px;
+            height: 100px;
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            border-radius: 17px;
+            right: -5%;
+            bottom: 5%;
+            animation: modernTailWag 3s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+
+        @keyframes dragonBreatheModern {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.03); }
+        }
+
+        @keyframes dragonNodModern {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(-3deg); }
+            75% { transform: translate(-50%, -50%) rotate(3deg); }
+        }
+
+        @keyframes modernWingFlap {
+            0%, 100% { transform: rotate(0deg) scaleY(1); }
+            50% { transform: rotate(-15deg) scaleY(0.9); }
+        }
+
+        @keyframes modernTailWag {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        @keyframes modernBlink {
+            0%, 90%, 100% { height: 8px; opacity: 1; }
+            95% { height: 2px; opacity: 0.7; }
+        }
+
+        /* Pet Name and Info */
+        .pet-name {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #9333ea, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .pet-type {
+            color: #6b7280;
+            font-size: 1.125rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        /* Expression Styles */
+        .expression-modern-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .expression-modern-face {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: expressionPulseModern 2.5s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .expression-modern-face.happy {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .expression-modern-face.neutral {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .expression-modern-face.sad {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .expression-modern-face.dead {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .expression-modern-face::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .expression-emoji {
+            font-size: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes expressionPulseModern {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .expression-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        /* Stats Styles */
+        .stat-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .stat-icon {
+            font-size: 1.25rem;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 1rem;
+            background: #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            border-radius: 0.5rem;
+            transition: width 0.5s ease;
+        }
+
+        .stat-fill.health { background: #10b981; }
+        .stat-fill.happiness { background: #3b82f6; }
+        .stat-fill.hunger { background: #ef4444; }
+
+        .stat-fill.low { background: #ef4444; }
+        .stat-fill.medium { background: #f59e0b; }
+        .stat-fill.high { background: #10b981; }
+
+        /* Action Buttons */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            transform: scale(1);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn.feed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .action-btn.play {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .action-btn.heal {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .action-btn.walk {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .action-btn.dress {
+            background: linear-gradient(135deg, #9333ea, #7c3aed);
+            color: white;
+        }
+
+        .action-btn.revive {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            color: white;
+        }
+
+        /* Create Forms */
+        .create-form {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .create-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .create-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Page -->
+    <div id="authPage" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Superhéroes & Mascotas</h1>
+                <p class="auth-description">Inicia sesión o regístrate para comenzar tu aventura</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">
+                    👤 Iniciar Sesión
+                </button>
+                <button class="tab" onclick="switchTab('register')">
+                    ➕ Registrarse
+                </button>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="loginUsername">Usuario</label>
+                    <input class="form-input" type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Contraseña</label>
+                    <input class="form-input" type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+            </form>
+
+            <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label" for="registerUsername">Usuario</label>
+                    <input class="form-input" type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input class="form-input" type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Contraseña</label>
+                    <input class="form-input" type="password" id="registerPassword" required>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero Selection Page -->
+    <div id="heroPage" class="hero-container hidden">
+        <div class="hero-content">
+            <div class="hero-header">
+                <h1 class="hero-title">¡Bienvenido, <span id="welcomeUser"></span>!</h1>
+                <p class="hero-subtitle">Elige tu superhéroe o crea uno nuevo</p>
+            </div>
+
+            <div id="heroSelection">
+                <div class="hero-grid">
+                    <div class="hero-card" onclick="selectHero(1, 'Capitán Fuego', 'Pyrokinesis')">
+                        <div class="hero-avatar">🦸‍♂️</div>
+                        <h3 class="hero-name">Capitán Fuego</h3>
+                        <p class="hero-power">Pyrokinesis</p>
+                        <p class="hero-description">Controla el fuego a voluntad</p>
+                        <button class="btn">Seleccionar Héroe</button>
+                    </div>
+                    <div class="hero-card" onclick="selectHero(2, 'Mujer Tormenta', 'Control del clima')">
+                        <div class="hero-avatar">🦸‍♀️</div>
+                        <h3 class="hero-name">Mujer Tormenta</h3>
+                        <p class="hero-power">Control del clima</p>
+                        <p class="hero-description">Manipula el clima y los elementos</p>
+                        <button class="btn">Seleccionar Héroe</button>
+                    </div>
+                    <div class="hero-card" onclick="selectHero(3, 'Hombre Sombra', 'Invisibilidad')">
+                        <div class="hero-avatar">🦸‍♂️</div>
+                        <h3 class="hero-name">Hombre Sombra</h3>
+                        <p class="hero-power">Invisibilidad</p>
+                        <p class="hero-description">Puede volverse invisible y manipular sombras</p>
+                        <button class="btn">Seleccionar Héroe</button>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="create-btn" onclick="showCreateHero()">Crear Nuevo Superhéroe</button>
+                </div>
+            </div>
+
+            <div id="createHeroForm" class="hidden">
+                <div class="create-form">
+                    <h2 class="card-title">Crear Nuevo Superhéroe</h2>
+                    <form onsubmit="createHero(event)">
+                        <div class="form-group">
+                            <label class="form-label">Nombre del Héroe</label>
+                            <input class="form-input" type="text" id="heroName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Superpoder</label>
+                            <input class="form-input" type="text" id="heroPower" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <input class="form-input" type="text" id="heroDescription" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn" style="flex: 1;">Crear Héroe</button>
+                            <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="hideCreateHero()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pet Selection Page -->
+    <div id="petPage" class="pet-container hidden">
+        <div class="hero-content">
+            <div class="hero-header">
+                <h1 class="hero-title">Elige tu Mascota</h1>
+                <p class="hero-subtitle">Héroe: <span id="selectedHeroName"></span> | Usuario: <span id="userNamePet"></span></p>
+            </div>
+
+            <div id="petSelection">
+                <div class="pet-grid">
+                    <div class="pet-card" onclick="selectPet('Dragón Bebé', 'Dragón', 'Rojo')">
+                        <div class="pet-emoji">🐲</div>
+                        <h3 class="hero-name">Dragón Bebé</h3>
+                        <p class="hero-power">Dragón Rojo</p>
+                        <button class="btn">Adoptar</button>
+                    </div>
+                    <div class="pet-card" onclick="selectPet('Fénix Dorado', 'Fénix', 'Dorado')">
+                        <div class="pet-emoji">🔥</div>
+                        <h3 class="hero-name">Fénix Dorado</h3>
+                        <p class="hero-power">Fénix Dorado</p>
+                        <button class="btn">Adoptar</button>
+                    </div>
+                    <div class="pet-card" onclick="selectPet('Lobo Lunar', 'Lobo', 'Plateado')">
+                        <div class="pet-emoji">🐺</div>
+                        <h3 class="hero-name">Lobo Lunar</h3>
+                        <p class="hero-power">Lobo Plateado</p>
+                        <button class="btn">Adoptar</button>
+                    </div>
+                    <div class="pet-card" onclick="selectPet('Gato Cósmico', 'Gato', 'Negro')">
+                        <div class="pet-emoji">🐱</div>
+                        <h3 class="hero-name">Gato Cósmico</h3>
+                        <p class="hero-power">Gato Negro</p>
+                        <button class="btn">Adoptar</button>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="create-btn" onclick="showCreatePet()">Crear Nueva Mascota</button>
+                </div>
+            </div>
+
+            <div id="createPetForm" class="hidden">
+                <div class="create-form">
+                    <h2 class="card-title">Crear Nueva Mascota</h2>
+                    <form onsubmit="createPet(event)">
+                        <div class="form-group">
+                            <label class="form-label">Nombre de la Mascota</label>
+                            <input class="form-input" type="text" id="petName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Mascota</label>
+                            <input class="form-input" type="text" id="petType" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Color</label>
+                            <input class="form-input" type="text" id="petColor" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="submit" class="btn" style="flex: 1;">Crear Mascota</button>
+                            <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="hideCreatePet()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pet Interface Page -->
+    <div id="petInterface" class="pet-interface hidden">
+        <div class="pet-interface-content">
+            <div class="pet-interface-header">
+                <div class="header-info">
+                    <h1 class="pet-interface-title" id="petInterfaceName">Dragón Bebé</h1>
+                    <div class="user-hero-info">
+                        <span class="info-label">Superhéroe:</span>
+                        <span class="info-value" id="heroNameInterface">Sin superhéroe</span>
+                        <span class="info-label">Usuario:</span>
+                        <span class="info-value" id="userNameInterface">Sin usuario</span>
+                    </div>
+                </div>
+                <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
+            </div>
+
+            <div class="pet-interface-grid">
+                <!-- Pet Display -->
+                <div class="pet-display-card">
+                    <div class="modern-pet-container">
+                        <div id="petAnimation" class="modern-dragon">
+                            <div class="dragon-main-body"></div>
+                            <div class="dragon-modern-head">
+                                <div class="dragon-eye dragon-eye-left"></div>
+                                <div class="dragon-eye dragon-eye-right"></div>
+                            </div>
+                            <div class="dragon-wing-left"></div>
+                            <div class="dragon-wing-right"></div>
+                            <div class="dragon-modern-tail"></div>
+                        </div>
+                    </div>
+
+                    <h2 class="pet-name" id="petDisplayName">Dragón Bebé</h2>
+                    <p class="pet-type" id="petDisplayType">Dragón Rojo</p>
+
+                    <div class="expression-modern-container">
+                        <div class="expression-modern-face happy" id="expressionFace">
+                            <span class="expression-emoji" id="expressionEmoji">😊</span>
+                        </div>
+                    </div>
+                    <p class="expression-text" id="expressionText">Feliz</p>
+                </div>
+
+                <!-- Stats and Actions -->
+                <div class="stats-actions">
+                    <!-- Stats Card -->
+                    <div class="stats-card">
+                        <h3 class="card-title">Estado de la Mascota</h3>
+                        
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span class="stat-label">
+                                    <span class="stat-icon">❤️</span> Vida
+                                </span>
+                                <span class="stat-value" id="healthValue">100%</span>
+                            </div>
+                            <div class="stat-bar">
+                                <div class="stat-fill health" id="healthBar" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span class="stat-label">
+                                    <span class="stat-icon">😊</span> Felicidad
+                                </span>
+                                <span class="stat-value" id="happinessValue">100%</span>
+                            </div>
+                            <div class="stat-bar">
+                                <div class="stat-fill happiness" id="happinessBar" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-header">
+                                <span class="stat-label">
+                                    <span class="stat-icon">🍽️</span> Hambre
+                                </span>
+                                <span class="stat-value" id="hungerValue">50%</span>
+                            </div>
+                            <div class="stat-bar">
+                                <div class="stat-fill hunger" id="hungerBar" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions Card -->
+                    <div class="actions-card">
+                        <h3 class="card-title">Acciones</h3>
+                        <div class="actions-grid">
+                            <button class="action-btn feed" onclick="performAction('alimentar')">
+                                🍎 Alimentar
+                            </button>
+                            <button class="action-btn play" onclick="performAction('jugar')">
+                                🎾 Jugar
+                            </button>
+                            <button class="action-btn heal" onclick="performAction('curar')">
+                                💊 Curar
+                            </button>
+                            <button class="action-btn walk" onclick="performAction('pasear')">
+                                🚶 Pasear
+                            </button>
+                            <button class="action-btn dress" onclick="performAction('vestir')">
+                                👕 Vestir
+                            </button>
+                            <button class="action-btn revive" onclick="performAction('revivir')">
+                                ✨ Revivir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let currentHero = null;
+        let currentPet = null;
+        let token = null;
+
+        // API base URL
+        const API_BASE = 'http://localhost:3001';
+
+        // Auth functions
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            const forms = document.querySelectorAll('form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.add('hidden'));
+            
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.remove('hidden');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.remove('hidden');
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    token = data.token;
+                    currentUser = { username };
+                    
+                    console.log('Login response:', data); // Debug log
+                    
+                    // Verificar si el usuario ya tiene una mascota
+                    if (data.hasPet && data.petData) {
+                        console.log('Usuario tiene mascota, mostrando interfaz directa'); // Debug log
+                        // El usuario ya tiene una mascota, mostrar directamente la interfaz de la mascota
+                        currentPet = {
+                            id: data.petData.id,
+                            name: data.petData.name,
+                            type: data.petData.alias || 'Sin tipo',
+                            color: 'Normal',
+                            vida: data.petData.vida,
+                            felicidad: data.petData.felicidad,
+                            hambre: data.petData.hambre,
+                            enfermedad: data.petData.enfermedad,
+                            viva: data.petData.viva,
+                            health: data.petData.vida,
+                            happiness: data.petData.felicidad,
+                            hunger: data.petData.hambre,
+                            isSick: data.petData.enfermedad ? true : false,
+                            isDead: data.petData.viva === false
+                        };
+                        showPetInterfaceDirect();
+                    } else {
+                        console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
+                        // El usuario no tiene mascota, mostrar selección de héroes
+                        showHeroSelection();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    token = data.token;
+                    currentUser = { username, email };
+                    
+                    console.log('Register response:', data); // Debug log
+                    
+                    // Verificar si el usuario ya tiene una mascota (en caso de registro con mascota)
+                    if (data.hasPet && data.petData) {
+                        console.log('Usuario tiene mascota, mostrando interfaz directa'); // Debug log
+                        // El usuario ya tiene una mascota, mostrar directamente la interfaz de la mascota
+                        currentPet = {
+                            id: data.petData.id,
+                            name: data.petData.name,
+                            type: data.petData.alias || 'Sin tipo',
+                            color: 'Normal',
+                            vida: data.petData.vida,
+                            felicidad: data.petData.felicidad,
+                            hambre: data.petData.hambre,
+                            enfermedad: data.petData.enfermedad,
+                            viva: data.petData.viva,
+                            health: data.petData.vida,
+                            happiness: data.petData.felicidad,
+                            hunger: data.petData.hambre,
+                            isSick: data.petData.enfermedad ? true : false,
+                            isDead: data.petData.viva === false
+                        };
+                        showPetInterfaceDirect();
+                    } else {
+                        console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
+                        // El usuario no tiene mascota, mostrar selección de héroes
+                        showHeroSelection();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+
+        function showHeroSelection() {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('heroPage').classList.remove('hidden');
+            document.getElementById('welcomeUser').textContent = currentUser.username;
+            loadHeroes();
+        }
+
+        // Hero functions
+        async function loadHeroes() {
+            try {
+                const response = await fetch(`${API_BASE}/api/heroes/disponibles`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const heroes = await response.json();
+                    displayHeroes(heroes);
+                } else {
+                    console.error('Error loading heroes');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayHeroes(heroes) {
+            const heroGrid = document.querySelector('.hero-grid');
+            heroGrid.innerHTML = '';
+
+            heroes.forEach(hero => {
+                const heroCard = document.createElement('div');
+                heroCard.className = 'hero-card';
+                heroCard.onclick = () => selectHero(hero.id, hero.name, hero.alias);
+                heroCard.innerHTML = `
+                    <div class="hero-avatar">🦸‍♂️</div>
+                    <h3 class="hero-name">${hero.name}</h3>
+                    <p class="hero-power">${hero.alias}</p>
+                    <p class="hero-description">${hero.city || 'Ciudad desconocida'}</p>
+                    <button class="btn">Seleccionar Héroe</button>
+                `;
+                heroGrid.appendChild(heroCard);
+            });
+        }
+
+        function selectHero(id, name, power) {
+            currentHero = { id, name, power };
+            showPetSelection();
+        }
+
+        function showCreateHero() {
+            document.getElementById('heroSelection').classList.add('hidden');
+            document.getElementById('createHeroForm').classList.remove('hidden');
+        }
+
+        function hideCreateHero() {
+            document.getElementById('heroSelection').classList.remove('hidden');
+            document.getElementById('createHeroForm').classList.add('hidden');
+        }
+
+        async function createHero(event) {
+            event.preventDefault();
+            const name = document.getElementById('heroName').value;
+            const alias = document.getElementById('heroPower').value;
+            const city = document.getElementById('heroDescription').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/heroes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, alias, city })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentHero = { id: data.id, name, alias, city };
+                    showPetSelection();
+                } else {
+                    alert('Error: ' + (data.error || 'Error al crear héroe'));
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+
+        function showPetSelection() {
+            document.getElementById('heroPage').classList.add('hidden');
+            document.getElementById('petPage').classList.remove('hidden');
+            document.getElementById('selectedHeroName').textContent = currentHero.name;
+            document.getElementById('userNamePet').textContent = currentUser.username;
+            loadPets();
+        }
+
+        // Pet functions
+        async function loadPets() {
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/disponibles`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const pets = await response.json();
+                    displayPets(pets);
+                } else {
+                    console.error('Error loading pets');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayPets(pets) {
+            const petGrid = document.querySelector('.pet-grid');
+            petGrid.innerHTML = '';
+
+            pets.forEach(pet => {
+                const petCard = document.createElement('div');
+                petCard.className = 'pet-card';
+                petCard.onclick = () => selectPet(pet.name, pet.alias, pet.city);
+                petCard.innerHTML = `
+                    <div class="pet-emoji">🐲</div>
+                    <h3 class="hero-name">${pet.name}</h3>
+                    <p class="hero-power">${pet.alias}</p>
+                    <button class="btn">Adoptar</button>
+                `;
+                petGrid.appendChild(petCard);
+            });
+        }
+
+        async function selectPet(name, type, color) {
+            try {
+                console.log('=== INICIANDO ADOPCIÓN ===');
+                console.log('Intentando adoptar mascota:', name, 'con héroe:', currentHero.id);
+                console.log('Token:', token);
+                console.log('API_BASE:', API_BASE);
+                
+                // Since loadPets now gets only available pets, we can directly adopt by name
+                const adoptResponse = await fetch(`${API_BASE}/api/pets/adoptar-por-nombre`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        petName: name, 
+                        heroId: currentHero.id 
+                    })
+                });
+                
+                console.log('Respuesta de adopción:', adoptResponse.status);
+                console.log('Headers de respuesta:', adoptResponse.headers);
+                
+                if (adoptResponse.ok) {
+                    const adoptedPet = await adoptResponse.json();
+                    console.log('Mascota adoptada:', adoptedPet);
+                    console.log('currentHero durante adopción:', currentHero);
+                    
+                    currentPet = {
+                        id: adoptedPet.id,
+                        name: adoptedPet.name,
+                        type: adoptedPet.alias || 'Sin tipo',
+                        color: 'Normal',
+                        vida: adoptedPet.vida,
+                        felicidad: adoptedPet.felicidad,
+                        hambre: adoptedPet.hambre,
+                        enfermedad: adoptedPet.enfermedad,
+                        viva: adoptedPet.viva,
+                        health: adoptedPet.vida,
+                        happiness: adoptedPet.felicidad,
+                        hunger: adoptedPet.hambre,
+                        isSick: adoptedPet.enfermedad ? true : false,
+                        isDead: adoptedPet.viva === false
+                    };
+                    
+                    console.log('currentPet después de adopción:', currentPet);
+                    console.log('currentHero después de adopción:', currentHero);
+                    showPetInterfaceDirect();
+                } else {
+                    const errorData = await adoptResponse.json();
+                    console.error('Error en adopción:', errorData);
+                    console.error('Status:', adoptResponse.status);
+                    console.error('StatusText:', adoptResponse.statusText);
+                    alert(`Error al adoptar: ${errorData.error || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                console.error('=== ERROR EN ADOPCIÓN ===');
+                console.error('Error completo:', error);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                alert('Error de conexión al adoptar mascota');
+            }
+        }
+
+        function showCreatePet() {
+            document.getElementById('petSelection').classList.add('hidden');
+            document.getElementById('createPetForm').classList.remove('hidden');
+        }
+
+        function hideCreatePet() {
+            document.getElementById('petSelection').classList.remove('hidden');
+            document.getElementById('createPetForm').classList.add('hidden');
+        }
+
+        async function createPet(event) {
+            event.preventDefault();
+            const name = document.getElementById('petName').value;
+            const alias = document.getElementById('petType').value;
+            const city = document.getElementById('petColor').value;
+            
+            try {
+                // Create the pet first
+                const createResponse = await fetch(`${API_BASE}/api/pets`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, alias, city })
+                });
+
+                const createdPet = await createResponse.json();
+
+                if (createResponse.ok) {
+                    // Now adopt the created pet
+                    const adoptResponse = await fetch(`${API_BASE}/api/pets/${createdPet.id}/adoptar`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ heroId: currentHero.id })
+                    });
+                    
+                    if (adoptResponse.ok) {
+                        const adoptedPet = await adoptResponse.json();
+                        console.log('Mascota creada y adoptada:', adoptedPet);
+                        
+                        currentPet = {
+                            id: adoptedPet.id,
+                            name: adoptedPet.name,
+                            type: adoptedPet.alias || 'Sin tipo',
+                            color: 'Normal',
+                            vida: adoptedPet.vida,
+                            felicidad: adoptedPet.felicidad,
+                            hambre: adoptedPet.hambre,
+                            enfermedad: adoptedPet.enfermedad,
+                            viva: adoptedPet.viva,
+                            health: adoptedPet.vida,
+                            happiness: adoptedPet.felicidad,
+                            hunger: adoptedPet.hambre,
+                            isSick: adoptedPet.enfermedad ? true : false,
+                            isDead: adoptedPet.viva === false
+                        };
+                        
+                        console.log('currentPet después de crear y adoptar:', currentPet);
+                        showPetInterfaceDirect();
+                    } else {
+                        const errorData = await adoptResponse.json();
+                        console.error('Error al adoptar mascota creada:', errorData);
+                        alert(`Error al adoptar mascota creada: ${errorData.error || 'Error desconocido'}`);
+                    }
+                } else {
+                    alert('Error: ' + (createdPet.error || 'Error al crear mascota'));
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+
+        // Función para mostrar la interfaz de mascota directamente sin hacer fetch
+        function showPetInterfaceDirect() {
+            console.log('=== SHOW PET INTERFACE DIRECT ===');
+            console.log('currentUser:', currentUser);
+            console.log('currentHero:', currentHero);
+            console.log('currentPet:', currentPet);
+            
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('heroPage').classList.add('hidden');
+            document.getElementById('petPage').classList.add('hidden');
+            document.getElementById('petInterface').classList.remove('hidden');
+            
+            // Update interface with pet data - con verificaciones de null
+            const petInterfaceName = document.getElementById('petInterfaceName');
+            const heroNameInterface = document.getElementById('heroNameInterface');
+            const userNameInterface = document.getElementById('userNameInterface');
+            const petDisplayName = document.getElementById('petDisplayName');
+            const petDisplayType = document.getElementById('petDisplayType');
+            
+            if (petInterfaceName) petInterfaceName.textContent = currentPet.name;
+            
+            // Mostrar nombre del superhéroe si está disponible, sino usar el nombre del usuario
+            const heroName = currentHero ? currentHero.name : currentUser.username;
+            if (heroNameInterface) heroNameInterface.textContent = heroName;
+            if (userNameInterface) userNameInterface.textContent = currentUser.username;
+            if (petDisplayName) petDisplayName.textContent = currentPet.name;
+            if (petDisplayType) petDisplayType.textContent = `${currentPet.type} ${currentPet.color}`;
+            
+            console.log('Interfaz actualizada:', {
+                petName: currentPet.name,
+                heroName: heroName,
+                userName: currentUser.username
+            });
+            
+            // Sync sickness state
+            if (currentPet.enfermedad) {
+                currentPet.isSick = true;
+            } else if (currentPet.isSick) {
+                currentPet.enfermedad = true;
+            } else {
+                currentPet.isSick = false;
+                currentPet.enfermedad = false;
+            }
+            
+            // Sync death state - solo marcar como muerta si la vida es 0 o menos
+            const vida = currentPet.vida || currentPet.health || 100;
+            if (vida <= 0) {
+                currentPet.isDead = true;
+                currentPet.viva = false;
+            } else {
+                currentPet.isDead = false;
+                currentPet.viva = true;
+            }
+
+            updatePetStats();
+            updatePetExpression();
+            updatePetAppearance();
+        }
+
+        async function showPetInterface() {
+            document.getElementById('petPage').classList.add('hidden');
+            document.getElementById('petInterface').classList.remove('hidden');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/mi-mascota`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const petData = await response.json();
+                    console.log('Datos de la mascota del backend:', petData); // Debug log
+                    
+                    currentPet = {
+                        id: petData.id,
+                        name: petData.name,
+                        type: petData.superheroe ? petData.superheroe.alias : 'Sin tipo',
+                        color: 'Normal',
+                        vida: petData.vida,
+                        felicidad: petData.felicidad,
+                        hambre: petData.hambre,
+                        enfermedad: petData.enfermedad,
+                        viva: petData.viva,
+                        health: petData.vida,
+                        happiness: petData.felicidad,
+                        hunger: petData.hambre,
+                        isSick: petData.enfermedad ? true : false,
+                        isDead: petData.viva === false
+                    };
+                    
+                    console.log('currentPet después de procesar:', currentPet); // Debug log
+                    
+                    if (petData.superheroe) {
+                        currentHero = {
+                            id: petData.superheroe.id,
+                            name: petData.superheroe.name,
+                            alias: petData.superheroe.alias
+                        };
+                    }
+                    
+                    // Update interface with pet data
+                    document.getElementById('petInterfaceName').textContent = currentPet.name;
+                    document.getElementById('heroNameInterface').textContent = currentHero.name;
+                    document.getElementById('userNameInterface').textContent = currentUser.username;
+                    document.getElementById('petDisplayName').textContent = currentPet.name;
+                    document.getElementById('petDisplayType').textContent = `${currentPet.type} ${currentPet.color}`;
+                    
+                    // Initialize pet health system
+                    // Sync sickness state from backend
+                    if (currentPet.enfermedad) {
+                        currentPet.isSick = true;
+                    } else if (currentPet.isSick) {
+                        currentPet.isSick = false;
+                        currentPet.enfermedad = false;
+                    } else {
+                        currentPet.isSick = false;
+                        currentPet.enfermedad = false;
+                    }
+                    
+                    if (!currentPet.isDead && currentPet.viva !== false) {
+                        currentPet.isDead = false;
+                        currentPet.viva = true;
+                    }
+
+                    updatePetStats();
+                    updatePetExpression();
+                    updatePetAppearance();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData); // Debug log
+                    alert(`Error: ${errorData.error || 'Error al obtener tu mascota'}`);
+                    return;
+                }
+            } catch (error) {
+                console.error('Error getting user pet:', error);
+                alert('Error de conexión al obtener tu mascota');
+                return;
+            }
+        }
+
+        // Pet interface functions
+        async function performAction(action) {
+            // If pet is dead, only allow revival
+            if (currentPet.isDead && action !== 'revivir') {
+                alert('Tu mascota está muerta. Usa "Revivir" para traerla de vuelta a la vida.');
+                return;
+            }
+
+            if (!currentPet || !currentPet.id) {
+                alert('No tienes una mascota seleccionada.');
+                return;
+            }
+
+            try {
+                let response;
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                };
+
+                switch (action) {
+                    case 'alimentar':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/alimentar`, {
+                            method: 'PUT',
+                            headers: headers
+                        });
+                        break;
+                    case 'jugar':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/jugar`, {
+                            method: 'PUT',
+                            headers: headers
+                        });
+                        break;
+                    case 'curar':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/curar`, {
+                            method: 'PUT',
+                            headers: headers
+                        });
+                        break;
+                    case 'pasear':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/pasear`, {
+                            method: 'PUT',
+                            headers: headers
+                        });
+                        break;
+                    case 'vestir':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/vestir`, {
+                            method: 'PUT',
+                            headers: {
+                                ...headers,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ item: 'collar' })
+                        });
+                        break;
+                    case 'revivir':
+                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/revivir`, {
+                            method: 'PUT',
+                            headers: headers
+                        });
+                        break;
+                }
+
+                if (response.ok) {
+                    const updatedPet = await response.json();
+                    // Update currentPet with the response from the server
+                    currentPet = { ...currentPet, ...updatedPet };
+                    
+                    // Check for sickness from overfeeding (alimentar case)
+                    if (action === 'alimentar' && (updatedPet.isSick || updatedPet.enfermedad)) {
+                        // Sync the sickness state
+                        currentPet.isSick = updatedPet.isSick || updatedPet.enfermedad;
+                        currentPet.enfermedad = updatedPet.enfermedad || updatedPet.isSick;
+                        showSickAlert();
+                    }
+                    
+                    // Check for recovery (curar case)
+                    if (action === 'curar' && !(updatedPet.isSick || updatedPet.enfermedad) && (currentPet.isSick || currentPet.enfermedad)) {
+                        // Sync the recovery state
+                        currentPet.isSick = false;
+                        currentPet.enfermedad = false;
+                        showRecoveryAlert();
+                    }
+                    
+                    // Check if pet died - solo si la vida llega a 0 o menos
+                    const updatedVida = updatedPet.vida || updatedPet.health || 100;
+                    if (updatedVida <= 0) {
+                        currentPet.isDead = true;
+                        currentPet.viva = false;
+                        showDeathAlert();
+                    }
+                    
+                    // Check if pet was revived
+                    if (action === 'revivir' && (updatedPet.vida || updatedPet.health) > 0) {
+                        currentPet.isDead = false;
+                        currentPet.viva = true;
+                        showRevivalAlert();
+                    }
+                    
+                    updatePetStats();
+                    updatePetExpression();
+                    updatePetAppearance();
+                    
+                    // Start automatic health decrease for sick pets
+                    startSickPetHealthSystem();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error || 'Error al realizar la acción'}`);
+                }
+            } catch (error) {
+                console.error('Error performing action:', error);
+                alert('Error de conexión al realizar la acción');
+            }
+        }
+        
+        // Automatic health decrease system for sick pets
+        function startSickPetHealthSystem() {
+            // Clear any existing interval
+            if (window.sickPetInterval) {
+                clearInterval(window.sickPetInterval);
+            }
+            
+            // Start new interval that runs every 10 seconds
+            window.sickPetInterval = setInterval(() => {
+                if (currentPet && (currentPet.isSick || currentPet.enfermedad) && !currentPet.isDead && currentPet.viva !== false) {
+                    // Decrease health by 5 points every 10 seconds when sick
+                    const currentHealth = currentPet.vida || currentPet.health || 0;
+                    const newHealth = Math.max(0, currentHealth - 5);
+                    currentPet.vida = newHealth;
+                    currentPet.health = newHealth;
+                    
+                    // Update the interface
+                    updatePetStats();
+                    updatePetExpression();
+                    updatePetAppearance();
+                    
+                    // Check if pet died from sickness
+                    if (newHealth <= 0) {
+                        currentPet.isDead = true;
+                        currentPet.viva = false;
+                        showDeathAlert();
+                        // Stop the interval when pet dies
+                        clearInterval(window.sickPetInterval);
+                    }
+                }
+            }, 10000); // 10 seconds
+        }
+
+        function updatePetStats() {
+            if (!currentPet) {
+                console.log('updatePetStats - currentPet es null/undefined, saltando actualización');
+                return;
+            }
+            
+            // Get DOM elements with null checks
+            const healthValue = document.getElementById('healthValue');
+            const healthBar = document.getElementById('healthBar');
+            const happinessValue = document.getElementById('happinessValue');
+            const happinessBar = document.getElementById('happinessBar');
+            const hungerValue = document.getElementById('hungerValue');
+            const hungerBar = document.getElementById('hungerBar');
+            
+            // Update health (vida)
+            const health = currentPet.vida || currentPet.health || 0;
+            if (healthValue) healthValue.textContent = `${health}%`;
+            if (healthBar) {
+                healthBar.style.width = `${health}%`;
+                healthBar.className = `stat-fill ${getStatClass(health)}`;
+            }
+            
+            // Update happiness (felicidad)
+            const happiness = currentPet.felicidad || currentPet.happiness || 0;
+            if (happinessValue) happinessValue.textContent = `${happiness}%`;
+            if (happinessBar) {
+                happinessBar.style.width = `${happiness}%`;
+                happinessBar.className = `stat-fill ${getStatClass(happiness)}`;
+            }
+            
+            // Update hunger (hambre)
+            const hunger = currentPet.hambre || currentPet.hunger || 0;
+            if (hungerValue) hungerValue.textContent = `${hunger}%`;
+            if (hungerBar) {
+                hungerBar.style.width = `${hunger}%`;
+                hungerBar.className = `stat-fill ${getHungerClass(hunger)}`;
+            }
+        }
+
+        function getStatClass(value) {
+            if (value >= 70) return 'high';
+            if (value >= 40) return 'medium';
+            return 'low';
+        }
+
+        function getHungerClass(value) {
+            if (value >= 70) return 'low'; // High hunger is bad
+            if (value >= 40) return 'medium';
+            return 'high'; // Low hunger is good
+        }
+
+        function updatePetExpression() {
+            if (!currentPet) {
+                console.log('updatePetExpression - currentPet es null/undefined, saltando actualización');
+                return;
+            }
+            
+            const health = currentPet.vida || currentPet.health || 0;
+            const happiness = currentPet.felicidad || currentPet.happiness || 0;
+            const avgStats = (health + happiness) / 2;
+            const expressionFace = document.getElementById('expressionFace');
+            const expressionEmoji = document.getElementById('expressionEmoji');
+            const expressionText = document.getElementById('expressionText');
+            
+            if (!expressionFace || !expressionEmoji || !expressionText) {
+                console.log('updatePetExpression - elementos de expresión no encontrados');
+                return;
+            }
+            
+            // Remove all expression classes
+            expressionFace.classList.remove('happy', 'neutral', 'sad', 'dead');
+            
+            if (currentPet.isDead || currentPet.viva === false) {
+                expressionFace.classList.add('dead');
+                expressionEmoji.textContent = '💀';
+                expressionText.textContent = 'Muerta';
+            } else if (avgStats >= 70) {
+                expressionFace.classList.add('happy');
+                expressionEmoji.textContent = '😊';
+                expressionText.textContent = 'Feliz';
+            } else if (avgStats >= 40) {
+                expressionFace.classList.add('neutral');
+                expressionEmoji.textContent = '😐';
+                expressionText.textContent = 'Neutro';
+            } else {
+                expressionFace.classList.add('sad');
+                expressionEmoji.textContent = '😢';
+                expressionText.textContent = 'Triste';
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // App starts with auth page visible - no need to update pet stats initially
+            console.log('Aplicación inicializada - página de autenticación visible');
+        });
+
+        
+
+        function updatePetAppearance() {
+            const petAnimation = document.getElementById('petAnimation');
+            const petDisplayName = document.getElementById('petDisplayName');
+            const petDisplayType = document.getElementById('petDisplayType');
+            
+            if (!currentPet) {
+                console.log('updatePetAppearance - currentPet es null/undefined');
+                return;
+            }
+            
+            console.log('updatePetAppearance - currentPet:', currentPet); // Debug log
+            console.log('vida:', currentPet.vida, 'health:', currentPet.health); // Debug log
+            console.log('isDead:', currentPet.isDead, 'viva:', currentPet.viva); // Debug log
+            console.log('isSick:', currentPet.isSick, 'enfermedad:', currentPet.enfermedad); // Debug log
+            
+            // Verificar si la mascota está realmente muerta - solo si la vida es 0 o menos
+            const vida = currentPet.vida || currentPet.health || 100;
+            const isActuallyDead = vida <= 0;
+            
+            console.log('vida calculada:', vida, 'isActuallyDead:', isActuallyDead);
+            console.log('currentPet.viva:', currentPet.viva, 'currentPet.isDead:', currentPet.isDead);
+            
+            // Solo marcar como muerta si la vida es 0 o menos, o si explícitamente está marcada como muerta
+            if (isActuallyDead) {
+                // Change appearance when dead
+                petAnimation.style.filter = 'grayscale(100%) brightness(0.5)';
+                petDisplayName.style.color = '#6b7280';
+                petDisplayType.style.color = '#6b7280';
+                
+                // Add death indicator
+                if (!document.getElementById('deathIndicator')) {
+                    const deathIndicator = document.createElement('div');
+                    deathIndicator.id = 'deathIndicator';
+                    deathIndicator.style.cssText = `
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: #6b7280;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 15px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        z-index: 10;
+                    `;
+                    deathIndicator.textContent = '💀 MUERTA';
+                    document.querySelector('.pet-display-card').style.position = 'relative';
+                    document.querySelector('.pet-display-card').appendChild(deathIndicator);
+                }
+                
+                // Remove sick indicator if exists
+                const sickIndicator = document.getElementById('sickIndicator');
+                if (sickIndicator) {
+                    sickIndicator.remove();
+                }
+            } else if (currentPet.isSick || currentPet.enfermedad) {
+                console.log('Mascota está enferma - aplicando filtros'); // Debug log
+                // Change appearance when sick
+                petAnimation.style.filter = 'grayscale(50%) brightness(0.7)';
+                petDisplayName.style.color = '#ef4444';
+                petDisplayType.style.color = '#ef4444';
+                
+                // Add sick indicator
+                if (!document.getElementById('sickIndicator')) {
+                    console.log('Creando indicador de enfermedad'); // Debug log
+                    const sickIndicator = document.createElement('div');
+                    sickIndicator.id = 'sickIndicator';
+                    sickIndicator.style.cssText = `
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: #ef4444;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 15px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        z-index: 10;
+                    `;
+                    sickIndicator.textContent = '🤒 ENFERMA';
+                    document.querySelector('.pet-display-card').style.position = 'relative';
+                    document.querySelector('.pet-display-card').appendChild(sickIndicator);
+                }
+                
+                // Remove death indicator if exists
+                const deathIndicator = document.getElementById('deathIndicator');
+                if (deathIndicator) {
+                    deathIndicator.remove();
+                }
+            } else {
+                console.log('Mascota está normal'); // Debug log
+                // Normal appearance
+                petAnimation.style.filter = 'none';
+                petDisplayName.style.color = '';
+                petDisplayType.style.color = '';
+                
+                // Remove all indicators
+                const sickIndicator = document.getElementById('sickIndicator');
+                const deathIndicator = document.getElementById('deathIndicator');
+                if (sickIndicator) {
+                    sickIndicator.remove();
+                }
+                if (deathIndicator) {
+                    deathIndicator.remove();
+                }
+            }
+        }
+
+        function showSickAlert() {
+            // Create alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🤒</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡${currentPet.name} está enferma!</div>
+                        <div style="font-size: 14px;">Usa "Curar" para ayudarla a recuperarse.</div>
+                    </div>
+                </div>
+            `;
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 5000);
+            
+            // Add slideOut animation
+            const slideOutStyle = document.createElement('style');
+            slideOutStyle.textContent = `
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(slideOutStyle);
+        }
+
+        function showRecoveryAlert() {
+            // Create recovery alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🎉</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡${currentPet.name} se ha recuperado!</div>
+                        <div style="font-size: 14px;">Tu mascota está sana y feliz.</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 4 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        function showDeathAlert() {
+            // Create death alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #6b7280;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">💀</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡${currentPet.name} ha muerto!</div>
+                        <div style="font-size: 14px;">Usa "Revivir" para traerla de vuelta a la vida.</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 6 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 6000);
+        }
+
+        function showRevivalAlert() {
+            // Create revival alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #8b5cf6;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">✨</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡${currentPet.name} ha revivido!</div>
+                        <div style="font-size: 14px;">Tu mascota ha vuelto a la vida.</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 4 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        function logout() {
+            // Limpiar el token y variables globales
+            localStorage.removeItem('token');
+            token = null;
+            currentHero = null;
+            currentPet = null;
+            
+            // Detener el sistema de salud automático si está activo
+            if (window.sickPetInterval) {
+                clearInterval(window.sickPetInterval);
+                window.sickPetInterval = null;
+            }
+            
+            // Ocultar todas las interfaces
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('heroSelection').classList.add('hidden');
+            document.getElementById('petSelection').classList.add('hidden');
+            document.getElementById('petInterface').classList.add('hidden');
+            
+            // Limpiar formularios
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            
+            // Mostrar mensaje de confirmación
+            alert('Sesión cerrada exitosamente');
+        }
+    </script>
+</body>
+</html>

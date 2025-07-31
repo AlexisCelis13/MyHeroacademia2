@@ -271,11 +271,86 @@ router.get('/pets/mi-mascota', requireAuth, async (req, res) => {
   }
 });
 
+// Adoptar mascota por nombre
+router.post('/pets/adoptar-por-nombre', requireAuth, async (req, res) => {
+  const { petName, heroId } = req.body;
+  
+  console.log('=== ADOPTAR POR NOMBRE ===');
+  console.log('petName:', petName);
+  console.log('heroId:', heroId);
+  console.log('req.userId:', req.userId);
+  
+  if (!petName || !heroId) {
+    console.log('Error: Faltan parámetros');
+    return res.status(400).json({ error: 'Se requiere el nombre de la mascota y el id del héroe para adoptar.' });
+  }
+  
+  try {
+    // Verificar que el usuario existe
+    const user = await userRepository.findById(req.userId);
+    console.log('Usuario encontrado:', user ? user.username : 'No encontrado');
+    
+    if (!user) {
+      console.log('Error: Usuario no encontrado');
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    // Buscar la mascota por nombre entre las disponibles
+    const pets = await petService.getAllPets();
+    console.log('Total mascotas:', pets.length);
+    
+    const petToAdopt = pets.find(pet => {
+      if (pet.name !== petName) return false;
+      
+      const adoptedBy = pet.adoptedBy;
+      const isAvailable = adoptedBy === null || 
+             adoptedBy === undefined || 
+             adoptedBy === 0 || 
+             adoptedBy === '' || 
+             (typeof adoptedBy === 'string' && adoptedBy.trim() === '');
+      
+      console.log(`Mascota ${pet.name}: adoptedBy=${adoptedBy}, isAvailable=${isAvailable}`);
+      return isAvailable;
+    });
+    
+    console.log('Mascota a adoptar:', petToAdopt ? petToAdopt.name : 'No encontrada');
+    
+    if (!petToAdopt) {
+      console.log('Error: Mascota no encontrada o ya adoptada');
+      return res.status(404).json({ error: 'Mascota no encontrada o ya adoptada' });
+    }
+    
+    // Adoptar la mascota (vincular al héroe)
+    console.log('Intentando adoptar mascota ID:', petToAdopt.id);
+    const pet = await petService.adoptPet(petToAdopt.id, heroId);
+    console.log('Mascota adoptada exitosamente:', pet.name);
+    
+    // Vincular la mascota al usuario
+    await userRepository.setMascotaId(req.userId, petToAdopt.id);
+    console.log('Mascota vinculada al usuario');
+    
+    res.json(pet);
+  } catch (error) {
+    console.error('Error en adopción:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Mascotas disponibles (sin dueño)
 router.get('/pets/disponibles', async (req, res) => {
   try {
     const pets = await petService.getAllPets();
-    const disponibles = pets.filter(p => !p.adoptedBy);
+    
+    // Filtro más robusto que maneja null, undefined, 0, y strings vacíos
+    const disponibles = pets.filter(p => {
+      const adoptedBy = p.adoptedBy;
+      return adoptedBy === null || 
+             adoptedBy === undefined || 
+             adoptedBy === 0 || 
+             adoptedBy === '' || 
+             (typeof adoptedBy === 'string' && adoptedBy.trim() === '');
+    });
+    
     res.json(disponibles.map(p => ({ id: p.id, name: p.name, alias: p.alias })));
   } catch (error) {
     res.status(500).json({ error: error.message });
