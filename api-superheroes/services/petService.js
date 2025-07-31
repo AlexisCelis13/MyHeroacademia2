@@ -128,7 +128,7 @@ function decaimientoFelicidadVida(pet) {
   const ahora = Date.now();
   if (!pet.decaimientoDesde) pet.decaimientoDesde = ahora;
   const msTranscurridos = ahora - pet.decaimientoDesde;
-  const intervalos = Math.floor(msTranscurridos / 60000); // cada 60s
+  const intervalos = Math.floor(msTranscurridos / 120000); // cada 2 minutos (más lento)
   
   console.log('=== DECAIMIENTO FELICIDAD VIDA ===');
   console.log('msTranscurridos:', msTranscurridos, 'intervalos:', intervalos);
@@ -138,36 +138,37 @@ function decaimientoFelicidadVida(pet) {
   
   let felicidadAntes = pet.felicidad;
   if (pet.felicidad > 0) {
-    pet.felicidad = Math.max(0, pet.felicidad - 2 * intervalos);
+    pet.felicidad = Math.max(0, pet.felicidad - 1 * intervalos); // Reducción más lenta
     console.log(`Felicidad reducida de ${felicidadAntes} a ${pet.felicidad}`);
   }
   
-  // Si felicidad llegó a 0, vida baja de 5 en 5 por cada minuto con felicidad en 0
+  // Si felicidad llegó a 0, vida baja más lentamente
   if (felicidadAntes > 0 && pet.felicidad === 0) {
     // Ajustar decaimientoDesde al momento en que felicidad llegó a 0
-    const msParaCero = Math.ceil(felicidadAntes / 2) * 60000;
+    const msParaCero = Math.ceil(felicidadAntes / 1) * 120000; // Más tiempo
     pet.decaimientoDesde = pet.decaimientoDesde + msParaCero;
     // Recalcular intervalos solo para vida
     const msTranscurridosVida = ahora - pet.decaimientoDesde;
-    const intervalosVida = Math.floor(msTranscurridosVida / 60000);
+    const intervalosVida = Math.floor(msTranscurridosVida / 120000);
     if (intervalosVida > 0) {
-      pet.vida = Math.max(0, pet.vida - 5 * intervalosVida);
-      pet.decaimientoDesde = pet.decaimientoDesde + intervalosVida * 60000;
+      pet.vida = Math.max(0, pet.vida - 2 * intervalosVida); // Reducción más lenta
+      pet.decaimientoDesde = pet.decaimientoDesde + intervalosVida * 120000;
       console.log(`Vida reducida por felicidad 0: ${pet.vida}`);
     }
   } else if (pet.felicidad === 0) {
-    // Si ya estaba en 0, solo baja vida
-    pet.vida = Math.max(0, pet.vida - 5 * intervalos);
-    pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 60000;
+    // Si ya estaba en 0, solo baja vida más lentamente
+    pet.vida = Math.max(0, pet.vida - 2 * intervalos); // Reducción más lenta
+    pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 120000;
     console.log(`Vida reducida (ya en 0): ${pet.vida}`);
   } else {
-    pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 60000;
+    pet.decaimientoDesde = pet.decaimientoDesde + intervalos * 120000;
   }
   
-  if (pet.vida === 0) {
+  // Solo marcar como muerta si la vida llega a 0 Y la felicidad también está en 0
+  if (pet.vida === 0 && pet.felicidad === 0) {
     pet.viva = false;
-    pet.historial.push('Murió por falta de felicidad');
-    console.log('Mascota marcada como muerta por vida 0');
+    pet.historial.push('Murió por falta de felicidad y vida');
+    console.log('Mascota marcada como muerta por vida y felicidad en 0');
   }
   
   console.log('Estado después:', { vida: pet.vida, felicidad: pet.felicidad, viva: pet.viva });
@@ -363,13 +364,45 @@ async function curar(id) {
 // Vestir mascota
 async function vestir(id, item) {
   const pet = await petRepository.getPetById(id);
+  if (!pet) throw new Error('Mascota no encontrada');
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
   descontarVidaSiEnferma(pet);
   recuperarVidaSiSana(pet);
   decaimientoFelicidadVida(pet);
-  if (!pet) throw new Error('Mascota no encontrada');
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
   if (!pet.viva) throw new Error('La mascota está muerta');
+  
   pet.itemsCustom.push(item);
   pet.historial.push(`Vestida con ${item}`);
+  await petRepository.updatePet(id, pet);
+  return pet;
+}
+
+// Quitar accesorio de mascota
+async function quitarAccesorio(id, item) {
+  const pet = await petRepository.getPetById(id);
+  if (!pet) throw new Error('Mascota no encontrada');
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
+  // Aplicar decaimiento solo después de verificar que la mascota está viva
+  descontarVidaSiEnferma(pet);
+  recuperarVidaSiSana(pet);
+  decaimientoFelicidadVida(pet);
+  
+  // Verificar nuevamente si la mascota sigue viva después del decaimiento
+  if (!pet.viva) throw new Error('La mascota está muerta');
+  
+  // Verificar si el accesorio existe
+  if (!pet.itemsCustom || !pet.itemsCustom.includes(item)) {
+    throw new Error('La mascota no tiene ese accesorio');
+  }
+  
+  // Remover el accesorio
+  pet.itemsCustom = pet.itemsCustom.filter(accesorio => accesorio !== item);
+  pet.historial.push(`Quitado accesorio: ${item}`);
   await petRepository.updatePet(id, pet);
   return pet;
 }
@@ -418,6 +451,7 @@ export default {
   jugar,
   curar,
   vestir,
+  quitarAccesorio,
   getHistorial,
   revivir
 }; 

@@ -196,6 +196,35 @@ router.put('/pets/:id/curar', requireAuth, async (req, res) => {
   }
 });
 
+// Obtener la mascota del usuario autenticado
+router.get('/pets/mi-mascota', requireAuth, async (req, res) => {
+  try {
+    const user = await userRepository.findById(req.userId);
+    if (!user || !user.mascotaId) return res.status(404).json({ error: 'No tienes mascota asociada' });
+    const pet = await petService.getEstado(user.mascotaId, true); // true para obtener todos los datos
+    let superheroe = null;
+    if (pet.adoptedBy) {
+      const hero = await heroRepository.getHeroById(pet.adoptedBy);
+      if (hero) {
+        superheroe = { id: hero.id, name: hero.name, alias: hero.alias };
+      }
+    }
+    res.json({
+      id: pet.id,
+      name: pet.name,
+      superheroe,
+      felicidad: pet.felicidad,
+      hambre: pet.hambre,
+      enfermedad: pet.enfermedad,
+      itemsCustom: pet.itemsCustom,
+      viva: pet.viva,
+      vida: pet.vida
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Vestir mascota (protegido)
 router.put('/pets/:id/vestir', requireAuth, async (req, res) => {
   const user = await userRepository.findById(req.userId);
@@ -208,6 +237,24 @@ router.put('/pets/:id/vestir', requireAuth, async (req, res) => {
   }
   try {
     const pet = await petService.vestir(req.params.id, item);
+    res.json(pet);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Quitar accesorio de mascota (protegido)
+router.put('/pets/:id/quitar-accesorio', requireAuth, async (req, res) => {
+  const user = await userRepository.findById(req.userId);
+  if (!user || user.mascotaId !== parseInt(req.params.id)) {
+    return res.status(403).json({ error: 'No tienes permiso para modificar esta mascota' });
+  }
+  const { item } = req.body;
+  if (!item) {
+    return res.status(400).json({ error: 'Debes especificar el item a quitar.' });
+  }
+  try {
+    const pet = await petService.quitarAccesorio(req.params.id, item);
     res.json(pet);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -239,35 +286,6 @@ router.put('/pets/:id/revivir', requireAuth, async (req, res) => {
     res.json(pet);
   } catch (error) {
     res.status(400).json({ error: error.message });
-  }
-});
-
-// Obtener la mascota del usuario autenticado
-router.get('/pets/mi-mascota', requireAuth, async (req, res) => {
-  try {
-    const user = await userRepository.findById(req.userId);
-    if (!user || !user.mascotaId) return res.status(404).json({ error: 'No tienes mascota asociada' });
-    const pet = await petService.getEstado(user.mascotaId, true); // true para obtener todos los datos
-    let superheroe = null;
-    if (pet.adoptedBy) {
-      const hero = await heroRepository.getHeroById(pet.adoptedBy);
-      if (hero) {
-        superheroe = { id: hero.id, name: hero.name, alias: hero.alias };
-      }
-    }
-    res.json({
-      id: pet.id,
-      name: pet.name,
-      superheroe,
-      felicidad: pet.felicidad,
-      hambre: pet.hambre,
-      enfermedad: pet.enfermedad,
-      itemsCustom: pet.itemsCustom,
-      viva: pet.viva,
-      vida: pet.vida
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 });
 

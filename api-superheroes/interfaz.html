@@ -720,6 +720,147 @@
         .create-btn:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+
+        /* Estilos para accesorios de mascota */
+        .pet-accessories-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .accessories-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .accessories-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            min-height: 2rem;
+            align-items: center;
+        }
+
+        .accessory-item {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            animation: accessoryGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes accessoryGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+        }
+
+        .no-accessories {
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.875rem;
+        }
+
+        /* Mejoras en el botón de vestir */
+        .action-btn.dress {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: 2px solid #7c3aed;
+        }
+
+        .action-btn.dress:hover {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Estilos para el botón de quitar accesorio */
+        .action-btn.remove-accessory {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: 2px solid #dc2626;
+        }
+
+        .action-btn.remove-accessory:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Modal para seleccionar accesorios */
+        .accessory-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .accessory-modal.show {
+            display: flex;
+        }
+
+        .accessory-modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .accessory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .accessory-option {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border: 2px solid #d1d5db;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .accessory-option:hover {
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+
+        .accessory-option.selected {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-color: #7c3aed;
+            color: white;
+        }
+
+        .no-accessories-message {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 2rem;
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 <body>
@@ -913,7 +1054,6 @@
                     </div>
                 </div>
                 <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
-                <button class="logout-button" onclick="testUpdateNames()" style="background: linear-gradient(135deg, #10b981, #059669); margin-left: 1rem;">Test Nombres</button>
             </div>
 
             <div class="pet-interface-grid">
@@ -941,6 +1081,14 @@
                         </div>
                     </div>
                     <p class="expression-text" id="expressionText">Feliz</p>
+                    
+                    <!-- Accesorios de la mascota -->
+                    <div class="pet-accessories-container">
+                        <h4 class="accessories-title">🎀 Accesorios</h4>
+                        <div class="accessories-list" id="accessoriesList">
+                            <span class="no-accessories">Sin accesorios</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Stats and Actions -->
@@ -1005,12 +1153,70 @@
                             <button class="action-btn dress" onclick="performAction('vestir')">
                                 👕 Vestir
                             </button>
+                            <button class="action-btn remove-accessory" onclick="performAction('quitar-accesorio')">
+                                🚫 Quitar
+                            </button>
                             <button class="action-btn revive" onclick="performAction('revivir')">
                                 ✨ Revivir
                             </button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para seleccionar accesorios -->
+    <div id="accessoryModal" class="accessory-modal">
+        <div class="accessory-modal-content">
+            <h3>🎀 Seleccionar Accesorio</h3>
+            <p>Elige un accesorio para vestir a tu mascota</p>
+            
+            <div class="accessory-grid">
+                <div class="accessory-option" onclick="selectAccessory('sombrero amarillo')">
+                    <span style="font-size: 2rem;">🎩</span>
+                    <span>Sombrero Amarillo</span>
+                </div>
+                <div class="accessory-option" onclick="selectAccessory('collar dorado')">
+                    <span style="font-size: 2rem;">🔗</span>
+                    <span>Collar Dorado</span>
+                </div>
+                <div class="accessory-option" onclick="selectAccessory('gafas de sol')">
+                    <span style="font-size: 2rem;">🕶️</span>
+                    <span>Gafas de Sol</span>
+                </div>
+                <div class="accessory-option" onclick="selectAccessory('corbata roja')">
+                    <span style="font-size: 2rem;">👔</span>
+                    <span>Corbata Roja</span>
+                </div>
+                <div class="accessory-option" onclick="selectAccessory('moño rosa')">
+                    <span style="font-size: 2rem;">🎀</span>
+                    <span>Moño Rosa</span>
+                </div>
+                <div class="accessory-option" onclick="selectAccessory('chaleco azul')">
+                    <span style="font-size: 2rem;">🧥</span>
+                    <span>Chaleco Azul</span>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeAccessoryModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para quitar accesorios -->
+    <div id="removeAccessoryModal" class="accessory-modal">
+        <div class="accessory-modal-content">
+            <h3>🚫 Quitar Accesorio</h3>
+            <p>Elige un accesorio para quitar de tu mascota</p>
+            
+            <div class="accessory-grid" id="removeAccessoryOptions">
+                <!-- Las opciones se cargan dinámicamente -->
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeRemoveAccessoryModal()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1082,7 +1288,8 @@
                             happiness: data.petData.felicidad,
                             hunger: data.petData.hambre,
                             isSick: data.petData.enfermedad ? true : false,
-                            isDead: data.petData.viva === false
+                            isDead: data.petData.viva === false,
+                            itemsCustom: data.petData.itemsCustom || []
                         };
                         showPetInterfaceDirect();
                     } else {
@@ -1139,7 +1346,8 @@
                             happiness: data.petData.felicidad,
                             hunger: data.petData.hambre,
                             isSick: data.petData.enfermedad ? true : false,
-                            isDead: data.petData.viva === false
+                            isDead: data.petData.viva === false,
+                            itemsCustom: data.petData.itemsCustom || []
                         };
                         showPetInterfaceDirect();
                     } else {
@@ -1333,7 +1541,8 @@
                         happiness: adoptedPet.felicidad,
                         hunger: adoptedPet.hambre,
                         isSick: adoptedPet.enfermedad ? true : false,
-                        isDead: adoptedPet.viva === false
+                        isDead: adoptedPet.viva === false,
+                        itemsCustom: adoptedPet.itemsCustom || []
                     };
                     
                     console.log('currentPet después de adopción:', currentPet);
@@ -1409,6 +1618,7 @@
                             hambre: adoptedPet.hambre,
                             enfermedad: adoptedPet.enfermedad,
                             viva: adoptedPet.viva,
+                            itemsCustom: adoptedPet.itemsCustom || [],
                             health: adoptedPet.vida,
                             happiness: adoptedPet.felicidad,
                             hunger: adoptedPet.hambre,
@@ -1537,7 +1747,8 @@
                         happiness: petData.felicidad,
                         hunger: petData.hambre,
                         isSick: petData.enfermedad ? true : false,
-                        isDead: petData.viva === false
+                        isDead: petData.viva === false,
+                        itemsCustom: petData.itemsCustom || []
                     };
                     
                     console.log('currentPet después de procesar:', currentPet); // Debug log
@@ -1635,16 +1846,16 @@
                             headers: headers
                         });
                     break;
-                case 'vestir':
-                        response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/vestir`, {
-                            method: 'PUT',
-                            headers: {
-                                ...headers,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ item: 'collar' })
-                        });
-                    break;
+                                    case 'vestir':
+                        // Abrir modal de accesorios en lugar de hacer petición directa
+                        showAccessoryModal();
+                        return; // Salir de la función para no hacer la petición
+                        break;
+                    case 'quitar-accesorio':
+                        // Abrir modal para quitar accesorios
+                        showRemoveAccessoryModal();
+                        return; // Salir de la función para no hacer la petición
+                        break;
                 case 'revivir':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/revivir`, {
                             method: 'PUT',
@@ -1775,6 +1986,9 @@
                 hungerBar.style.width = `${hunger}%`;
                 hungerBar.className = `stat-fill ${getHungerClass(hunger)}`;
             }
+            
+            // Update accessories display
+            updateAccessoriesDisplay();
         }
 
         function getStatClass(value) {
@@ -1818,7 +2032,7 @@
                 expressionFace.classList.add('happy');
                 expressionEmoji.textContent = '😊';
                 expressionText.textContent = 'Feliz';
-            } else if (avgStats >= 40) {
+            } else if (avgStats >= 50) {
                 expressionFace.classList.add('neutral');
                 expressionEmoji.textContent = '😐';
                 expressionText.textContent = 'Neutro';
@@ -2148,36 +2362,199 @@
             alert('Sesión cerrada exitosamente');
         }
 
-        function testUpdateNames() {
-            console.log('=== TEST UPDATE NAMES ===');
-            console.log('currentUser:', currentUser);
-            console.log('currentHero:', currentHero);
-            console.log('currentPet:', currentPet);
+
+
+        // Funciones para manejar accesorios
+        function showAccessoryModal() {
+            const modal = document.getElementById('accessoryModal');
+            modal.classList.add('show');
+        }
+
+        function closeAccessoryModal() {
+            const modal = document.getElementById('accessoryModal');
+            modal.classList.remove('show');
+        }
+
+        async function selectAccessory(accessoryName) {
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/vestir`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ item: accessoryName })
+                });
+
+                if (response.ok) {
+                    const updatedPet = await response.json();
+                    currentPet = { ...currentPet, ...updatedPet };
+                    
+                    // Actualizar la visualización de accesorios
+                    updateAccessoriesDisplay();
+                    
+                    // Mostrar alerta de éxito
+                    showAccessoryAlert(accessoryName);
+                    
+                    // Cerrar el modal
+                    closeAccessoryModal();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error al vestir: ${errorData.error || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+
+        function updateAccessoriesDisplay() {
+            const accessoriesList = document.getElementById('accessoriesList');
+            const accessories = currentPet.itemsCustom || [];
             
-            const heroNameInterface = document.getElementById('heroNameInterface');
-            const userNameInterface = document.getElementById('userNameInterface');
+            if (accessories.length === 0) {
+                accessoriesList.innerHTML = '<span class="no-accessories">Sin accesorios</span>';
+            } else {
+                accessoriesList.innerHTML = accessories.map(accessory => 
+                    `<div class="accessory-item">🎀 ${accessory}</div>`
+                ).join('');
+            }
+        }
+
+        function showAccessoryAlert(accessoryName) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #8b5cf6;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🎀</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡Accesorio agregado!</div>
+                        <div style="font-size: 14px;">${currentPet.name} ahora lleva: ${accessoryName}</div>
+                    </div>
+                </div>
+            `;
             
-            console.log('heroNameInterface:', heroNameInterface);
-            console.log('userNameInterface:', userNameInterface);
+            document.body.appendChild(alertDiv);
             
-            if (heroNameInterface) {
-                heroNameInterface.textContent = 'TEST HERO NAME';
-                console.log('heroNameInterface.textContent actualizado a: TEST HERO NAME');
+            // Remove alert after 4 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Funciones para quitar accesorios
+        function showRemoveAccessoryModal() {
+            const modal = document.getElementById('removeAccessoryModal');
+            modal.classList.add('show');
+            updateRemoveAccessoryOptions();
+        }
+
+        function closeRemoveAccessoryModal() {
+            const modal = document.getElementById('removeAccessoryModal');
+            modal.classList.remove('show');
+        }
+
+        function updateRemoveAccessoryOptions() {
+            const accessories = currentPet.itemsCustom || [];
+            const optionsContainer = document.getElementById('removeAccessoryOptions');
+            
+            if (accessories.length === 0) {
+                optionsContainer.innerHTML = '<div class="no-accessories-message">No tienes accesorios para quitar</div>';
+                return;
             }
             
-            if (userNameInterface) {
-                userNameInterface.textContent = 'TEST USER NAME';
-                console.log('userNameInterface.textContent actualizado a: TEST USER NAME');
+            optionsContainer.innerHTML = accessories.map(accessory => `
+                <div class="accessory-option" onclick="removeAccessory('${accessory}')">
+                    <span style="font-size: 2rem;">🎀</span>
+                    <span>${accessory}</span>
+                </div>
+            `).join('');
+        }
+
+        async function removeAccessory(accessoryName) {
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/quitar-accesorio`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ item: accessoryName })
+                });
+
+                if (response.ok) {
+                    const updatedPet = await response.json();
+                    currentPet = { ...currentPet, ...updatedPet };
+                    
+                    // Actualizar la visualización de accesorios
+                    updateAccessoriesDisplay();
+                    
+                    // Mostrar alerta de éxito
+                    showRemoveAccessoryAlert(accessoryName);
+                    
+                    // Cerrar el modal
+                    closeRemoveAccessoryModal();
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error al quitar accesorio: ${errorData.error || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
             }
+        }
+
+        function showRemoveAccessoryAlert(accessoryName) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.5s ease-out;
+                max-width: 300px;
+            `;
+            alertDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">🚫</span>
+                    <div>
+                        <div style="font-weight: bold; margin-bottom: 5px;">¡Accesorio removido!</div>
+                        <div style="font-size: 14px;">Se quitó: ${accessoryName}</div>
+                    </div>
+                </div>
+            `;
             
-            // Verificar si los elementos son visibles
-            const userHeroInfo = document.querySelector('.user-hero-info');
-            console.log('user-hero-info element:', userHeroInfo);
-            if (userHeroInfo) {
-                console.log('user-hero-info display:', window.getComputedStyle(userHeroInfo).display);
-                console.log('user-hero-info visibility:', window.getComputedStyle(userHeroInfo).visibility);
-                console.log('user-hero-info opacity:', window.getComputedStyle(userHeroInfo).opacity);
-            }
+            document.body.appendChild(alertDiv);
+            
+            // Remove alert after 4 seconds
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 500);
+            }, 4000);
         }
     </script>
 </body>
