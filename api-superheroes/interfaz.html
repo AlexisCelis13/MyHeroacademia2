@@ -1803,13 +1803,12 @@
 
         // Pet interface functions
         async function performAction(action) {
-            // If pet is dead, only allow revival
-            if (currentPet.isDead && action !== 'revivir') {
-                alert('Tu mascota está muerta. Usa "Revivir" para traerla de vuelta a la vida.');
-                return;
-            }
-
+            console.log('🎮 performAction LLAMADA con:', action);
+            console.log('🎮 currentPet.isDead:', currentPet.isDead);
+            console.log('🎮 currentPet.viva:', currentPet.viva);
+            
             if (!currentPet || !currentPet.id) {
+                console.log('❌ No hay mascota seleccionada:', currentPet);
                 alert('No tienes una mascota seleccionada.');
                 return;
             }
@@ -1823,10 +1822,12 @@
 
             switch (action) {
                 case 'alimentar':
+                        console.log('🍽️ Enviando petición de alimentar a:', `${API_BASE}/api/pets/${currentPet.id}/alimentar`);
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/alimentar`, {
                             method: 'PUT',
                             headers: headers
                         });
+                        console.log('🍽️ Respuesta de alimentar:', response.status, response.statusText);
                     break;
                 case 'jugar':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/jugar`, {
