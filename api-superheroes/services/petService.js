@@ -227,15 +227,19 @@ async function alimentar(id) {
   if (pet.hambre <= 0) {
     pet.enfermedad = 'Gripa';
     pet.felicidad = Math.max(0, pet.felicidad - 10);
+    pet.vida = Math.max(0, pet.vida - 10); // Descuento inmediato de vida
     pet.historial.push('Se enfermó de Gripa por sobrealimentación (llena)');
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
+    console.log('Descuento inmediato por Gripa: vida -10, felicidad -10');
   } else if (pet.hambre >= 100) {
     pet.enfermedad = 'Gripa';
     pet.felicidad = Math.max(0, pet.felicidad - 10);
+    pet.vida = Math.max(0, pet.vida - 10); // Descuento inmediato de vida
     pet.historial.push('Se enfermó de Gripa por sobrealimentación');
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
+    console.log('Descuento inmediato por Gripa: vida -10, felicidad -10');
   } else {
     pet.hambre = Math.max(0, pet.hambre - 30);
     pet.felicidad = Math.min(100, pet.felicidad + 5);
@@ -284,9 +288,11 @@ async function pasear(id) {
   if (pet.hambre > 100) {
     pet.enfermedad = 'Sarpullido';
     pet.felicidad = Math.max(0, pet.felicidad - 5);
+    pet.vida = Math.max(0, pet.vida - 5); // Descuento inmediato de vida
     pet.historial.push('Se enfermó de Sarpullido por hambre excesiva');
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
+    console.log('Descuento inmediato por Sarpullido: vida -5, felicidad -5');
   }
   
   // Solo marcar como muerta si la felicidad llega a 0 después de la acción
@@ -322,9 +328,11 @@ async function jugar(id) {
   if (pet.hambre > 100) {
     pet.enfermedad = 'Piel de Salchicha';
     pet.felicidad = Math.max(0, pet.felicidad - 15);
+    pet.vida = Math.max(0, pet.vida - 15); // Descuento inmediato de vida
     pet.historial.push('Se enfermó de Piel de Salchicha por hambre excesiva');
     pet.enfermoDesde = Date.now();
     pet.recuperandoDesde = null;
+    console.log('Descuento inmediato por Piel de Salchicha: vida -15, felicidad -15');
   }
   
   // Solo marcar como muerta si la felicidad llega a 0 después de la acción
