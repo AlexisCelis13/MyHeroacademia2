@@ -894,6 +894,8 @@
             color: white;
         }
 
+
+
         /* Create Forms */
         .create-form {
             background: white;
@@ -1104,6 +1106,13 @@
                 </div>
                 <button type="submit" class="btn">Iniciar Sesión</button>
             </form>
+            
+            <!-- Botón de diagnóstico -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="showDiagnosticInfo()" style="background: #ff9800; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 12px;">
+                    🔍 Diagnóstico
+                </button>
+            </div>
 
             <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
                 <div class="form-group">
@@ -1120,6 +1129,13 @@
                 </div>
                 <button type="submit" class="btn">Registrarse</button>
             </form>
+            
+            <!-- Botón de diagnóstico -->
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="showDiagnosticInfo()" style="background: #ff9800; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 12px;">
+                    🔍 Diagnóstico
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1448,7 +1464,65 @@
         let token = null;
 
         // API base URL
-        const API_BASE = 'http://localhost:3001';
+        // Detectar automáticamente la URL base según el entorno
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3001' 
+            : `https://${window.location.hostname}`;
+        
+        console.log('API_BASE detectada:', API_BASE);
+        console.log('Hostname:', window.location.hostname);
+        
+        // Mostrar información de diagnóstico en la página
+        function showDiagnosticInfo() {
+            const diagnosticInfo = `
+                <div style="background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 10px; margin: 10px; font-family: monospace; font-size: 12px;">
+                    <h3>🔍 Información de Diagnóstico</h3>
+                    <p><strong>URL actual:</strong> ${window.location.href}</p>
+                    <p><strong>Hostname:</strong> ${window.location.hostname}</p>
+                    <p><strong>API_BASE:</strong> ${API_BASE}</p>
+                    <p><strong>Protocolo:</strong> ${window.location.protocol}</p>
+                    <p><strong>Puerto:</strong> ${window.location.port || '80/443'}</p>
+                    <button onclick="testConnection()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">🧪 Probar Conexión</button>
+                    <button onclick="testLoginConnection()" style="background: #2196F3; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">🔐 Probar Login</button>
+                    <button onclick="this.parentElement.remove()" style="background: #f44336; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">❌ Cerrar</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('afterbegin', diagnosticInfo);
+        }
+        
+        // Función para probar la conexión
+        async function testConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                alert(`✅ Conexión exitosa!\n\nRespuesta del servidor:\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                alert(`❌ Error de conexión:\n\n${error.message}\n\nURL intentada: ${API_BASE}/health`);
+            }
+        }
+        
+        // Función para probar login específico
+        async function testLoginConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: 'testuser2', password: '123' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`✅ Login exitoso!\n\nToken recibido: ${data.token ? 'Sí' : 'No'}\n\nRespuesta completa:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    const errorData = await response.json();
+                    alert(`❌ Error en login:\n\nStatus: ${response.status}\nError: ${errorData.error || 'Error desconocido'}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión en login:\n\n${error.message}\n\nURL intentada: ${API_BASE}/api/auth/login`);
+            }
+        }
 
         // Auth functions
         function switchTab(tab) {
@@ -1522,7 +1596,8 @@
                     alert('Error: ' + data.error);
                 }
             } catch (error) {
-                alert('Error de conexión: ' + error.message);
+                console.error('Error de conexión:', error);
+                alert(`Error de conexión: ${error.message}\n\nVerifica que el servidor esté funcionando en: ${API_BASE}`);
             }
         }
 
@@ -1582,7 +1657,8 @@
                     alert('Error: ' + data.error);
                 }
             } catch (error) {
-                alert('Error de conexión: ' + error.message);
+                console.error('Error de conexión:', error);
+                alert(`Error de conexión: ${error.message}\n\nVerifica que el servidor esté funcionando en: ${API_BASE}`);
             }
         }
 
@@ -1998,25 +2074,37 @@
                 if (response.ok) {
                     const updatedPetData = await response.json();
                     
-                    // Actualizar currentPet con los nuevos datos
-                    currentPet = {
-                        ...currentPet,
-                        vida: updatedPetData.vida,
-                        felicidad: updatedPetData.felicidad,
-                        hambre: updatedPetData.hambre,
-                        enfermedad: updatedPetData.enfermedad,
-                        viva: updatedPetData.viva,
-                        isSick: updatedPetData.enfermedad ? true : false,
-                        isDead: updatedPetData.viva === false,
-                        itemsCustom: updatedPetData.itemsCustom || currentPet.itemsCustom || []
-                    };
+                    // Solo actualizar si hay cambios significativos
+                    const hasSignificantChanges = 
+                        updatedPetData.vida !== currentPet.vida ||
+                        updatedPetData.felicidad !== currentPet.felicidad ||
+                        updatedPetData.hambre !== currentPet.hambre ||
+                        updatedPetData.enfermedad !== currentPet.enfermedad ||
+                        updatedPetData.viva !== currentPet.viva;
                     
-                    // Actualizar la interfaz
-                    updatePetStats();
-                    updatePetExpression();
-                    updatePetAppearance();
-                    
-                    console.log('Datos de mascota actualizados automáticamente:', updatedPetData);
+                    if (hasSignificantChanges) {
+                        // Actualizar currentPet con los nuevos datos
+                        currentPet = {
+                            ...currentPet,
+                            vida: updatedPetData.vida,
+                            felicidad: updatedPetData.felicidad,
+                            hambre: updatedPetData.hambre,
+                            enfermedad: updatedPetData.enfermedad,
+                            viva: updatedPetData.viva,
+                            isSick: updatedPetData.enfermedad ? true : false,
+                            isDead: updatedPetData.viva === false,
+                            itemsCustom: updatedPetData.itemsCustom || currentPet.itemsCustom || []
+                        };
+                        
+                        // Actualizar la interfaz solo si hay cambios
+                        updatePetStats();
+                        updatePetExpression();
+                        updatePetAppearance();
+                        
+                        console.log('Datos de mascota actualizados automáticamente (cambios detectados):', updatedPetData);
+                    } else {
+                        console.log('Actualización automática: sin cambios significativos');
+                    }
                 }
             } catch (error) {
                 console.error('Error al actualizar datos de mascota:', error);
@@ -2032,9 +2120,9 @@
                 clearInterval(autoUpdateInterval);
             }
             
-            // Iniciar nuevo intervalo
-            autoUpdateInterval = setInterval(autoUpdatePetData, 5000); // Actualizar cada 5 segundos
-            console.log('Actualización automática iniciada');
+            // Iniciar nuevo intervalo - actualizar cada 30 segundos en lugar de 5
+            autoUpdateInterval = setInterval(autoUpdatePetData, 30000); // Actualizar cada 30 segundos
+            console.log('Actualización automática iniciada (cada 30 segundos)');
         }
 
         function stopAutoUpdate() {
@@ -2044,6 +2132,19 @@
                 console.log('Actualización automática detenida');
             }
         }
+
+        // Función para alternar la actualización automática
+        function toggleAutoUpdate() {
+            if (autoUpdateInterval) {
+                stopAutoUpdate();
+                return false; // Actualización desactivada
+            } else {
+                startAutoUpdate();
+                return true; // Actualización activada
+            }
+        }
+
+
 
         async function showPetInterface() {
             document.getElementById('petPage').classList.add('hidden');

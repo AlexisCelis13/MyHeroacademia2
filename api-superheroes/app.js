@@ -13,10 +13,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Servir archivos estáticos
 app.use(express.static(__dirname));
+
+// Endpoint de salud
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Servidor funcionando correctamente' });
+});
 
 // Ruta específica para el archivo HTML
 app.get('/', (req, res) => {
@@ -29,8 +38,8 @@ app.use('/api', authController);
 
 connectDB();
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log(`Interfaz disponible en http://localhost:${PORT}/interfaz.html`);
 });
