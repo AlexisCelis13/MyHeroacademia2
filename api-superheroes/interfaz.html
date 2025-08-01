@@ -381,7 +381,7 @@
             50% { transform: translateY(-15px) rotate(1deg); }
         }
 
-        /* Modern Dragon Styles */
+        /* Modern Pet Styles - Más como una mascota real */
         .modern-dragon {
             position: relative;
             width: 100%;
@@ -390,42 +390,234 @@
 
         .dragon-main-body {
             position: absolute;
-            width: 120px;
-            height: 140px;
-            background: linear-gradient(135deg, #10b981, #059669, #047857);
-            border-radius: 60px;
+            width: 140px;
+            height: 120px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            border-radius: 70px 70px 60px 60px;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            animation: dragonBreatheModern 3s ease-in-out infinite;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            animation: petBreathe 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
         }
 
         .dragon-modern-head {
             position: absolute;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #34d399, #10b981);
-            border-radius: 40px;
+            width: 90px;
+            height: 70px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 45px 45px 35px 35px;
             left: 50%;
-            top: 15%;
+            top: 20%;
             transform: translate(-50%, -50%);
-            animation: dragonNodModern 5s ease-in-out infinite;
-            box-shadow: 0 5px 20px rgba(52, 211, 153, 0.4);
+            animation: petNod 5s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.4);
         }
 
         .dragon-eye {
             position: absolute;
-            width: 12px;
+            width: 14px;
+            height: 10px;
+            background: #1f2937;
+            border-radius: 50%;
+            top: 40%;
+            animation: petBlink 4s ease-in-out infinite;
+        }
+
+        .dragon-eye-left { left: 20%; }
+        .dragon-eye-right { right: 20%; }
+
+        /* Pupila para ojos más expresivos */
+        .dragon-eye::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+        }
+
+        /* Nuevos elementos faciales - más como mascota */
+        .dragon-nose {
+            position: absolute;
+            width: 10px;
             height: 8px;
             background: #1f2937;
             border-radius: 50%;
-            top: 35%;
-            animation: modernBlink 4s ease-in-out infinite;
+            left: 50%;
+            top: 60%;
+            transform: translate(-50%, -50%);
         }
 
-        .dragon-eye-left { left: 25%; }
-        .dragon-eye-right { right: 25%; }
+        .dragon-mouth {
+            position: absolute;
+            width: 20px;
+            height: 12px;
+            background: #dc2626;
+            border-radius: 0 0 10px 10px;
+            left: 50%;
+            top: 75%;
+            transform: translate(-50%, -50%);
+            animation: petSmile 3s ease-in-out infinite;
+        }
+
+        .dragon-mouth::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 6px;
+            background: #fbbf24;
+            border-radius: 50%;
+            left: 50%;
+            top: -3px;
+            transform: translate(-50%, -50%);
+        }
+
+        .dragon-cheek {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background: #fecaca;
+            border-radius: 50%;
+            top: 65%;
+            animation: cheekBlush 2s ease-in-out infinite;
+        }
+
+        .dragon-cheek-left { left: 12%; }
+        .dragon-cheek-right { right: 12%; }
+
+        .dragon-forehead {
+            position: absolute;
+            width: 24px;
+            height: 6px;
+            background: #f59e0b;
+            border-radius: 3px;
+            left: 50%;
+            top: 25%;
+            transform: translate(-50%, -50%);
+        }
+
+        .dragon-ear {
+            position: absolute;
+            width: 14px;
+            height: 20px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 7px;
+            top: 10%;
+            animation: earWiggle 2s ease-in-out infinite;
+        }
+
+        .dragon-ear-left { 
+            left: 8%; 
+            transform: rotate(-20deg);
+        }
+        .dragon-ear-right { 
+            right: 8%; 
+            transform: rotate(20deg);
+        }
+
+        /* Patas de mascota */
+        .pet-leg {
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 4px;
+            bottom: -10px;
+        }
+
+        .pet-leg-left { left: 25%; }
+        .pet-leg-right { right: 25%; }
+
+
+
+        @keyframes tailWag {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(10deg); }
+        }
+
+        /* Estados expresivos de la mascota */
+        .dragon-mouth.happy {
+            background: #dc2626;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .dragon-mouth.sad {
+            background: #6b7280;
+            border-radius: 8px 8px 0 0;
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+        .dragon-mouth.dead {
+            background: #4b5563;
+            opacity: 0.5;
+        }
+
+        .dragon-cheek.happy {
+            background: #fecaca;
+            animation: cheekBlush 2s ease-in-out infinite;
+        }
+
+        .dragon-cheek.sad {
+            background: #d1d5db;
+            animation: none;
+        }
+
+        .dragon-eye.happy {
+            background: #1f2937;
+        }
+
+        .dragon-eye.sad {
+            background: #6b7280;
+            transform: scale(0.8);
+        }
+
+        .dragon-eye.dead {
+            background: #4b5563;
+            opacity: 0.5;
+        }
+
+        /* Efectos para mascota enferma */
+        .dragon-main-body.sick {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            animation: sickShiver 0.8s ease-in-out infinite;
+        }
+
+        .dragon-modern-head.sick {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+
+        .dragon-modern-tail.sick {
+            animation: sickTailWag 1s ease-in-out infinite;
+        }
+
+        @keyframes sickTailWag {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        @keyframes sickShiver {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(1deg); }
+            75% { transform: translate(-50%, -50%) rotate(-1deg); }
+        }
+
+        /* Efectos para mascota muerta */
+        .dragon-main-body.dead {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            animation: none;
+        }
+
+        .dragon-modern-head.dead {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .dragon-modern-tail.dead {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            animation: none;
+        }
 
         .dragon-wing-left, .dragon-wing-right {
             position: absolute;
@@ -461,15 +653,15 @@
             box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
         }
 
-        @keyframes dragonBreatheModern {
+        @keyframes petBreathe {
             0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.03); }
+            50% { transform: translate(-50%, -50%) scale(1.02); }
         }
 
-        @keyframes dragonNodModern {
+        @keyframes petNod {
             0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-50%, -50%) rotate(-3deg); }
-            75% { transform: translate(-50%, -50%) rotate(3deg); }
+            25% { transform: translate(-50%, -50%) rotate(-2deg); }
+            75% { transform: translate(-50%, -50%) rotate(2deg); }
         }
 
         @keyframes modernWingFlap {
@@ -483,9 +675,29 @@
             75% { transform: rotate(-20deg); }
         }
 
-        @keyframes modernBlink {
-            0%, 90%, 100% { height: 8px; opacity: 1; }
-            95% { height: 2px; opacity: 0.7; }
+        @keyframes petBlink {
+            0%, 90%, 100% { height: 10px; opacity: 1; }
+            95% { height: 3px; opacity: 0.7; }
+        }
+
+        @keyframes petSmile {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        @keyframes cheekBlush {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes earWiggle {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(-30deg); }
+        }
+
+        @keyframes earWiggleRight {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(30deg); }
         }
 
         /* Pet Name and Info */
@@ -1061,14 +1273,21 @@
                 <div class="pet-display-card">
                     <div class="modern-pet-container">
                         <div id="petAnimation" class="modern-dragon">
-                            <div class="dragon-main-body"></div>
+                            <div class="dragon-main-body">
+                                <div class="pet-leg pet-leg-left"></div>
+                                <div class="pet-leg pet-leg-right"></div>
+                            </div>
                             <div class="dragon-modern-head">
                                 <div class="dragon-eye dragon-eye-left"></div>
                                 <div class="dragon-eye dragon-eye-right"></div>
+                                <div class="dragon-nose"></div>
+                                <div class="dragon-mouth"></div>
+                                <div class="dragon-cheek dragon-cheek-left"></div>
+                                <div class="dragon-cheek dragon-cheek-right"></div>
+                                <div class="dragon-forehead"></div>
+                                <div class="dragon-ear dragon-ear-left"></div>
+                                <div class="dragon-ear dragon-ear-right"></div>
                             </div>
-                            <div class="dragon-wing-left"></div>
-                            <div class="dragon-wing-right"></div>
-                            <div class="dragon-modern-tail"></div>
                         </div>
                     </div>
 
@@ -1292,6 +1511,8 @@
                             itemsCustom: data.petData.itemsCustom || []
                         };
                         showPetInterfaceDirect();
+                        // Refrescar datos actualizados del servidor
+                        refreshPetData();
                     } else {
                         console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
                         // El usuario no tiene mascota, mostrar selección de héroes
@@ -1350,6 +1571,8 @@
                             itemsCustom: data.petData.itemsCustom || []
                         };
                         showPetInterfaceDirect();
+                        // Refrescar datos actualizados del servidor
+                        refreshPetData();
                     } else {
                         console.log('Usuario no tiene mascota, mostrando selección de héroes'); // Debug log
                         // El usuario no tiene mascota, mostrar selección de héroes
@@ -1594,8 +1817,8 @@
                 const createdPet = await createResponse.json();
 
                 if (createResponse.ok) {
-                    // Now adopt the created pet - use _id instead of id
-                    const adoptResponse = await fetch(`${API_BASE}/api/pets/${createdPet._id}/adoptar`, {
+                    // Now adopt the created pet - use the numeric id
+                    const adoptResponse = await fetch(`${API_BASE}/api/pets/${createdPet.id}/adoptar`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1609,7 +1832,7 @@
                         console.log('Mascota creada y adoptada:', adoptedPet);
             
             currentPet = {
-                            id: adoptedPet._id,
+                            id: adoptedPet.id,
                             name: adoptedPet.name,
                             type: adoptedPet.alias || 'Sin tipo',
                             color: 'Normal',
@@ -1716,6 +1939,110 @@
             updatePetStats();
             updatePetExpression();
             updatePetAppearance();
+            
+            // Iniciar actualización automática
+            startAutoUpdate();
+        }
+        
+        // Función para obtener datos actualizados de la mascota del servidor
+        async function refreshPetData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/mi-mascota`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const petData = await response.json();
+                    console.log('Datos actualizados de la mascota:', petData);
+                    
+                    // Actualizar currentPet con los datos del servidor
+                    currentPet = {
+                        ...currentPet,
+                        vida: petData.vida,
+                        felicidad: petData.felicidad,
+                        hambre: petData.hambre,
+                        enfermedad: petData.enfermedad,
+                        viva: petData.viva,
+                        itemsCustom: petData.itemsCustom || currentPet.itemsCustom || []
+                    };
+                    
+                    console.log('currentPet actualizado:', currentPet);
+                    
+                    // Actualizar la interfaz con los nuevos datos
+                    updatePetStats();
+                    updatePetExpression();
+                    updatePetAppearance();
+                } else {
+                    console.error('Error obteniendo datos de la mascota:', response.status);
+                }
+            } catch (error) {
+                console.error('Error refrescando datos de la mascota:', error);
+            }
+        }
+
+        // Función para actualizar automáticamente los datos de la mascota
+        async function autoUpdatePetData() {
+            if (!currentPet || !currentPet.id) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/pets/mi-mascota`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const updatedPetData = await response.json();
+                    
+                    // Actualizar currentPet con los nuevos datos
+                    currentPet = {
+                        ...currentPet,
+                        vida: updatedPetData.vida,
+                        felicidad: updatedPetData.felicidad,
+                        hambre: updatedPetData.hambre,
+                        enfermedad: updatedPetData.enfermedad,
+                        viva: updatedPetData.viva,
+                        isSick: updatedPetData.enfermedad ? true : false,
+                        isDead: updatedPetData.viva === false,
+                        itemsCustom: updatedPetData.itemsCustom || currentPet.itemsCustom || []
+                    };
+                    
+                    // Actualizar la interfaz
+                    updatePetStats();
+                    updatePetExpression();
+                    updatePetAppearance();
+                    
+                    console.log('Datos de mascota actualizados automáticamente:', updatedPetData);
+                }
+            } catch (error) {
+                console.error('Error al actualizar datos de mascota:', error);
+            }
+        }
+
+        // Iniciar actualización automática cada 5 segundos
+        let autoUpdateInterval;
+
+        function startAutoUpdate() {
+            // Limpiar intervalo anterior si existe
+            if (autoUpdateInterval) {
+                clearInterval(autoUpdateInterval);
+            }
+            
+            // Iniciar nuevo intervalo
+            autoUpdateInterval = setInterval(autoUpdatePetData, 5000); // Actualizar cada 5 segundos
+            console.log('Actualización automática iniciada');
+        }
+
+        function stopAutoUpdate() {
+            if (autoUpdateInterval) {
+                clearInterval(autoUpdateInterval);
+                autoUpdateInterval = null;
+                console.log('Actualización automática detenida');
+            }
         }
 
         async function showPetInterface() {
@@ -1803,30 +2130,40 @@
 
         // Pet interface functions
         async function performAction(action) {
-            // If pet is dead, only allow revival
-            if (currentPet.isDead && action !== 'revivir') {
-                alert('Tu mascota está muerta. Usa "Revivir" para traerla de vuelta a la vida.');
-                return;
-            }
-
+            console.log('=== PERFORM ACTION INICIADA ===');
+            console.log('Acción solicitada:', action);
+            
             if (!currentPet || !currentPet.id) {
                 alert('No tienes una mascota seleccionada.');
                 return;
             }
 
             try {
+                console.log('Ejecutando acción:', action);
+                console.log('currentPet antes de la acción:', currentPet);
+                console.log('Token disponible:', !!token);
+                console.log('currentPet.id:', currentPet.id);
+                
                 let response;
                 const headers = {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 };
 
+                console.log('Antes del switch - action:', action);
+                console.log('Headers configurados:', headers);
+
             switch (action) {
                 case 'alimentar':
+                        console.log('=== CASO ALIMENTAR ===');
+                        console.log('Enviando petición de alimentar a:', `${API_BASE}/api/pets/${currentPet.id}/alimentar`);
+                        console.log('Headers:', headers);
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/alimentar`, {
                             method: 'PUT',
                             headers: headers
                         });
+                        console.log('Respuesta de alimentar:', response.status, response.statusText);
+                        console.log('=== FIN CASO ALIMENTAR ===');
                     break;
                 case 'jugar':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/jugar`, {
@@ -1846,7 +2183,7 @@
                             headers: headers
                         });
                     break;
-                                    case 'vestir':
+                case 'vestir':
                         // Abrir modal de accesorios en lugar de hacer petición directa
                         showAccessoryModal();
                         return; // Salir de la función para no hacer la petición
@@ -1855,7 +2192,7 @@
                         // Abrir modal para quitar accesorios
                         showRemoveAccessoryModal();
                         return; // Salir de la función para no hacer la petición
-                        break;
+                    break;
                 case 'revivir':
                         response = await fetch(`${API_BASE}/api/pets/${currentPet.id}/revivir`, {
                             method: 'PUT',
@@ -1863,91 +2200,68 @@
                         });
                     break;
                 }
+                
+                console.log('Después del switch - response:', response);
 
                 if (response.ok) {
                     const updatedPet = await response.json();
-                    // Update currentPet with the response from the server
-                    currentPet = { ...currentPet, ...updatedPet };
+                    console.log('Respuesta del servidor:', updatedPet);
+                    console.log('Status de respuesta:', response.status);
+                    console.log('Headers de respuesta:', response.headers);
                     
-                    // Check for sickness from overfeeding (alimentar case)
-                    if (action === 'alimentar' && (updatedPet.isSick || updatedPet.enfermedad)) {
-                        // Sync the sickness state
-                        currentPet.isSick = updatedPet.isSick || updatedPet.enfermedad;
-                        currentPet.enfermedad = updatedPet.enfermedad || updatedPet.isSick;
+                    // Actualizar currentPet completamente con la respuesta del servidor
+                    currentPet = {
+                        ...currentPet,
+                        vida: updatedPet.vida,
+                        felicidad: updatedPet.felicidad,
+                        hambre: updatedPet.hambre,
+                        enfermedad: updatedPet.enfermedad,
+                        viva: updatedPet.viva,
+                        isSick: updatedPet.enfermedad ? true : false,
+                        isDead: updatedPet.viva === false,
+                        itemsCustom: updatedPet.itemsCustom || currentPet.itemsCustom || []
+                    };
+                    
+                    console.log('currentPet actualizado:', currentPet);
+                    
+                    // Mostrar alertas basadas en el estado del servidor
+                    if (updatedPet.enfermedad && action === 'alimentar') {
                         showSickAlert();
                     }
                     
-                    // Check for recovery (curar case)
-                    if (action === 'curar' && !(updatedPet.isSick || updatedPet.enfermedad) && (currentPet.isSick || currentPet.enfermedad)) {
-                        // Sync the recovery state
-                        currentPet.isSick = false;
-                        currentPet.enfermedad = false;
+                    if (action === 'curar' && !updatedPet.enfermedad) {
                         showRecoveryAlert();
                     }
                     
-                    // Check if pet died - solo si la vida llega a 0 o menos
-                    const updatedVida = updatedPet.vida || updatedPet.health || 100;
-                    if (updatedVida <= 0) {
-                        currentPet.isDead = true;
-                        currentPet.viva = false;
+                    if (updatedPet.viva === false) {
                         showDeathAlert();
                     }
                     
-                    // Check if pet was revived
-                    if (action === 'revivir' && (updatedPet.vida || updatedPet.health) > 0) {
-                        currentPet.isDead = false;
-                        currentPet.viva = true;
+                    if (action === 'revivir' && updatedPet.viva === true) {
                         showRevivalAlert();
             }
             
             updatePetStats();
             updatePetExpression();
-                    updatePetAppearance();
-                    
-                    // Start automatic health decrease for sick pets
-                    startSickPetHealthSystem();
+            updatePetAppearance();
+            
+            // Forzar una actualización automática después de la acción
+            setTimeout(autoUpdatePetData, 1000); // Actualizar después de 1 segundo
                 } else {
                     const errorData = await response.json();
+                    console.log('Error del servidor:', errorData);
                     alert(`Error: ${errorData.error || 'Error al realizar la acción'}`);
                 }
+                
+                console.log('=== PERFORM ACTION COMPLETADA ===');
             } catch (error) {
                 console.error('Error performing action:', error);
+                console.error('Stack trace:', error.stack);
                 alert('Error de conexión al realizar la acción');
             }
         }
         
-        // Automatic health decrease system for sick pets
-        function startSickPetHealthSystem() {
-            // Clear any existing interval
-            if (window.sickPetInterval) {
-                clearInterval(window.sickPetInterval);
-            }
-            
-            // Start new interval that runs every 10 seconds
-            window.sickPetInterval = setInterval(() => {
-                if (currentPet && (currentPet.isSick || currentPet.enfermedad) && !currentPet.isDead && currentPet.viva !== false) {
-                    // Decrease health by 5 points every 10 seconds when sick
-                    const currentHealth = currentPet.vida || currentPet.health || 0;
-                    const newHealth = Math.max(0, currentHealth - 5);
-                    currentPet.vida = newHealth;
-                    currentPet.health = newHealth;
-                    
-                    // Update the interface
-                    updatePetStats();
-                    updatePetExpression();
-                    updatePetAppearance();
-                    
-                    // Check if pet died from sickness
-                    if (newHealth <= 0) {
-                        currentPet.isDead = true;
-                        currentPet.viva = false;
-                        showDeathAlert();
-                        // Stop the interval when pet dies
-                        clearInterval(window.sickPetInterval);
-                    }
-                }
-            }, 10000); // 10 seconds
-        }
+
 
         function updatePetStats() {
             if (!currentPet) {
@@ -1963,24 +2277,27 @@
             const hungerValue = document.getElementById('hungerValue');
             const hungerBar = document.getElementById('hungerBar');
             
-            // Update health (vida)
-            const health = currentPet.vida || currentPet.health || 0;
+            // Verificar si la mascota está muerta
+            const isDead = currentPet.isDead || currentPet.viva === false || (currentPet.vida || currentPet.health || 0) <= 0;
+            
+            // Update health (vida) - si está muerta, mostrar 0
+            const health = isDead ? 0 : (currentPet.vida || currentPet.health || 0);
             if (healthValue) healthValue.textContent = `${health}%`;
             if (healthBar) {
                 healthBar.style.width = `${health}%`;
                 healthBar.className = `stat-fill ${getStatClass(health)}`;
             }
             
-            // Update happiness (felicidad)
-            const happiness = currentPet.felicidad || currentPet.happiness || 0;
+            // Update happiness (felicidad) - si está muerta, mostrar 0
+            const happiness = isDead ? 0 : (currentPet.felicidad || currentPet.happiness || 0);
             if (happinessValue) happinessValue.textContent = `${happiness}%`;
             if (happinessBar) {
                 happinessBar.style.width = `${happiness}%`;
                 happinessBar.className = `stat-fill ${getStatClass(happiness)}`;
             }
             
-            // Update hunger (hambre)
-            const hunger = currentPet.hambre || currentPet.hunger || 0;
+            // Update hunger (hambre) - si está muerta, mostrar 0
+            const hunger = isDead ? 0 : (currentPet.hambre || currentPet.hunger || 0);
             if (hungerValue) hungerValue.textContent = `${hunger}%`;
             if (hungerBar) {
                 hungerBar.style.width = `${hunger}%`;
@@ -1988,6 +2305,7 @@
             }
             
             // Update accessories display
+            updateAccessoriesDisplay();
             updateAccessoriesDisplay();
         }
 
@@ -2024,22 +2342,50 @@
             // Remove all expression classes
             expressionFace.classList.remove('happy', 'neutral', 'sad', 'dead');
             
-            if (currentPet.isDead || currentPet.viva === false) {
+            // Actualizar elementos faciales de la mascota
+            const dragonMouth = document.querySelector('.dragon-mouth');
+            const dragonEyes = document.querySelectorAll('.dragon-eye');
+            const dragonCheeks = document.querySelectorAll('.dragon-cheek');
+            
+            // Verificar si la mascota está muerta (vida <= 0 o viva = false)
+            const isDead = currentPet.isDead || currentPet.viva === false || (currentPet.vida || currentPet.health || 0) <= 0;
+            
+            if (isDead) {
                 expressionFace.classList.add('dead');
                 expressionEmoji.textContent = '💀';
                 expressionText.textContent = 'Muerta';
+                
+                // Expresión muerta
+                if (dragonMouth) dragonMouth.classList.remove('happy', 'sad');
+                dragonEyes.forEach(eye => eye.classList.remove('happy', 'sad'));
+                dragonCheeks.forEach(cheek => cheek.classList.remove('happy', 'sad'));
             } else if (avgStats >= 70) {
                 expressionFace.classList.add('happy');
                 expressionEmoji.textContent = '😊';
                 expressionText.textContent = 'Feliz';
+                
+                // Expresión feliz
+                if (dragonMouth) dragonMouth.classList.add('happy');
+                dragonEyes.forEach(eye => eye.classList.add('happy'));
+                dragonCheeks.forEach(cheek => cheek.classList.add('happy'));
             } else if (avgStats >= 50) {
                 expressionFace.classList.add('neutral');
                 expressionEmoji.textContent = '😐';
                 expressionText.textContent = 'Neutro';
+                
+                // Expresión neutral
+                if (dragonMouth) dragonMouth.classList.remove('happy', 'sad');
+                dragonEyes.forEach(eye => eye.classList.remove('happy', 'sad'));
+                dragonCheeks.forEach(cheek => cheek.classList.remove('happy', 'sad'));
             } else {
                 expressionFace.classList.add('sad');
                 expressionEmoji.textContent = '😢';
                 expressionText.textContent = 'Triste';
+                
+                // Expresión triste
+                if (dragonMouth) dragonMouth.classList.add('sad');
+                dragonEyes.forEach(eye => eye.classList.add('sad'));
+                dragonCheeks.forEach(cheek => cheek.classList.add('sad'));
             }
         }
 
@@ -2066,19 +2412,28 @@
             console.log('isDead:', currentPet.isDead, 'viva:', currentPet.viva); // Debug log
             console.log('isSick:', currentPet.isSick, 'enfermedad:', currentPet.enfermedad); // Debug log
             
-            // Verificar si la mascota está realmente muerta - solo si la vida es 0 o menos
+            // Verificar si la mascota está realmente muerta - solo cuando la vida llega a 0
             const vida = currentPet.vida || currentPet.health || 100;
+            const felicidad = currentPet.felicidad || currentPet.happiness || 100;
             const isActuallyDead = vida <= 0;
             
-            console.log('vida calculada:', vida, 'isActuallyDead:', isActuallyDead);
+            console.log('vida calculada:', vida, 'felicidad:', felicidad, 'isActuallyDead:', isActuallyDead);
             console.log('currentPet.viva:', currentPet.viva, 'currentPet.isDead:', currentPet.isDead);
             
-            // Solo marcar como muerta si la vida es 0 o menos, o si explícitamente está marcada como muerta
+            // Solo marcar como muerta si la vida llega a 0
             if (isActuallyDead) {
                 // Change appearance when dead
                 petAnimation.style.filter = 'grayscale(100%) brightness(0.5)';
                 petDisplayName.style.color = '#6b7280';
                 petDisplayType.style.color = '#6b7280';
+                
+                // Actualizar elementos del cuerpo para estado muerto
+                const dragonBody = document.querySelector('.dragon-main-body');
+                const dragonHead = document.querySelector('.dragon-modern-head');
+                const dragonTail = document.querySelector('.dragon-modern-tail');
+                if (dragonBody) dragonBody.classList.add('dead');
+                if (dragonHead) dragonHead.classList.add('dead');
+                if (dragonTail) dragonTail.classList.add('dead');
                 
                 // Add death indicator
                 if (!document.getElementById('deathIndicator')) {
@@ -2113,6 +2468,22 @@
                 petDisplayName.style.color = '#ef4444';
                 petDisplayType.style.color = '#ef4444';
                 
+                // Actualizar elementos del cuerpo para estado enfermo
+                const dragonBody = document.querySelector('.dragon-main-body');
+                const dragonHead = document.querySelector('.dragon-modern-head');
+                const dragonTail = document.querySelector('.dragon-modern-tail');
+                if (dragonBody) {
+                    dragonBody.classList.remove('dead');
+                    dragonBody.classList.add('sick');
+                }
+                if (dragonHead) {
+                    dragonHead.classList.remove('dead');
+                    dragonHead.classList.add('sick');
+                }
+                if (dragonTail) {
+                    dragonTail.classList.add('sick');
+                }
+                
                 // Add sick indicator
                 if (!document.getElementById('sickIndicator')) {
                     console.log('Creando indicador de enfermedad'); // Debug log
@@ -2146,6 +2517,20 @@
                 petAnimation.style.filter = 'none';
                 petDisplayName.style.color = '';
                 petDisplayType.style.color = '';
+                
+                // Actualizar elementos del cuerpo para estado normal
+                const dragonBody = document.querySelector('.dragon-main-body');
+                const dragonHead = document.querySelector('.dragon-modern-head');
+                const dragonTail = document.querySelector('.dragon-modern-tail');
+                if (dragonBody) {
+                    dragonBody.classList.remove('dead', 'sick');
+                }
+                if (dragonHead) {
+                    dragonHead.classList.remove('dead', 'sick');
+                }
+                if (dragonTail) {
+                    dragonTail.classList.remove('sick');
+                }
                 
                 // Remove all indicators
                 const sickIndicator = document.getElementById('sickIndicator');
@@ -2336,6 +2721,9 @@
         }
 
         function logout() {
+            // Detener la actualización automática
+            stopAutoUpdate();
+            
             // Limpiar el token y variables globales
             localStorage.removeItem('token');
             token = null;
