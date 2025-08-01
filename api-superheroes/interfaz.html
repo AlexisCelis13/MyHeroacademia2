@@ -1106,13 +1106,6 @@
                 </div>
                 <button type="submit" class="btn">Iniciar Sesión</button>
             </form>
-            
-            <!-- Botón de diagnóstico -->
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="showDiagnosticInfo()" style="background: #ff9800; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 12px;">
-                    🔍 Diagnóstico
-                </button>
-            </div>
 
             <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
                 <div class="form-group">
@@ -1129,13 +1122,6 @@
                 </div>
                 <button type="submit" class="btn">Registrarse</button>
             </form>
-            
-            <!-- Botón de diagnóstico -->
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="showDiagnosticInfo()" style="background: #ff9800; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 12px;">
-                    🔍 Diagnóstico
-                </button>
-            </div>
         </div>
     </div>
 
@@ -1149,27 +1135,7 @@
 
             <div id="heroSelection">
                 <div class="hero-grid">
-                    <div class="hero-card" onclick="selectHero(1, 'Capitán Fuego', 'Pyrokinesis')">
-                        <div class="hero-avatar">🦸‍♂️</div>
-                        <h3 class="hero-name">Capitán Fuego</h3>
-                        <p class="hero-power">Pyrokinesis</p>
-                        <p class="hero-description">Controla el fuego a voluntad</p>
-                        <button class="btn">Seleccionar Héroe</button>
-                    </div>
-                    <div class="hero-card" onclick="selectHero(2, 'Mujer Tormenta', 'Control del clima')">
-                        <div class="hero-avatar">🦸‍♀️</div>
-                        <h3 class="hero-name">Mujer Tormenta</h3>
-                        <p class="hero-power">Control del clima</p>
-                        <p class="hero-description">Manipula el clima y los elementos</p>
-                        <button class="btn">Seleccionar Héroe</button>
-                    </div>
-                    <div class="hero-card" onclick="selectHero(3, 'Hombre Sombra', 'Invisibilidad')">
-                        <div class="hero-avatar">🦸‍♂️</div>
-                        <h3 class="hero-name">Hombre Sombra</h3>
-                        <p class="hero-power">Invisibilidad</p>
-                        <p class="hero-description">Puede volverse invisible y manipular sombras</p>
-                        <button class="btn">Seleccionar Héroe</button>
-                    </div>
+                    <!-- Los héroes se cargarán dinámicamente desde la base de datos -->
                 </div>
                 <div style="text-align: center;">
                     <button class="create-btn" onclick="showCreateHero()">Crear Nuevo Superhéroe</button>
@@ -1212,30 +1178,7 @@
 
             <div id="petSelection">
                 <div class="pet-grid">
-                    <div class="pet-card" onclick="selectPet('Dragón Bebé', 'Dragón', 'Rojo')">
-                        <div class="pet-emoji">🐲</div>
-                        <h3 class="hero-name">Dragón Bebé</h3>
-                        <p class="hero-power">Dragón Rojo</p>
-                        <button class="btn">Adoptar</button>
-                    </div>
-                    <div class="pet-card" onclick="selectPet('Fénix Dorado', 'Fénix', 'Dorado')">
-                        <div class="pet-emoji">🔥</div>
-                        <h3 class="hero-name">Fénix Dorado</h3>
-                        <p class="hero-power">Fénix Dorado</p>
-                        <button class="btn">Adoptar</button>
-                    </div>
-                    <div class="pet-card" onclick="selectPet('Lobo Lunar', 'Lobo', 'Plateado')">
-                        <div class="pet-emoji">🐺</div>
-                        <h3 class="hero-name">Lobo Lunar</h3>
-                        <p class="hero-power">Lobo Plateado</p>
-                        <button class="btn">Adoptar</button>
-                    </div>
-                    <div class="pet-card" onclick="selectPet('Gato Cósmico', 'Gato', 'Negro')">
-                        <div class="pet-emoji">🐱</div>
-                        <h3 class="hero-name">Gato Cósmico</h3>
-                        <p class="hero-power">Gato Negro</p>
-                        <button class="btn">Adoptar</button>
-                    </div>
+                    <!-- Las mascotas se cargarán dinámicamente desde la base de datos -->
                 </div>
                 <div style="text-align: center;">
                     <button class="create-btn" onclick="showCreatePet()">Crear Nueva Mascota</button>
@@ -1472,57 +1415,7 @@
         console.log('API_BASE detectada:', API_BASE);
         console.log('Hostname:', window.location.hostname);
         
-        // Mostrar información de diagnóstico en la página
-        function showDiagnosticInfo() {
-            const diagnosticInfo = `
-                <div style="background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 10px; margin: 10px; font-family: monospace; font-size: 12px;">
-                    <h3>🔍 Información de Diagnóstico</h3>
-                    <p><strong>URL actual:</strong> ${window.location.href}</p>
-                    <p><strong>Hostname:</strong> ${window.location.hostname}</p>
-                    <p><strong>API_BASE:</strong> ${API_BASE}</p>
-                    <p><strong>Protocolo:</strong> ${window.location.protocol}</p>
-                    <p><strong>Puerto:</strong> ${window.location.port || '80/443'}</p>
-                    <button onclick="testConnection()" style="background: #4CAF50; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">🧪 Probar Conexión</button>
-                    <button onclick="testLoginConnection()" style="background: #2196F3; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">🔐 Probar Login</button>
-                    <button onclick="this.parentElement.remove()" style="background: #f44336; color: white; padding: 10px; border: none; border-radius: 5px; margin: 5px;">❌ Cerrar</button>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('afterbegin', diagnosticInfo);
-        }
-        
-        // Función para probar la conexión
-        async function testConnection() {
-            try {
-                const response = await fetch(`${API_BASE}/health`);
-                const data = await response.json();
-                alert(`✅ Conexión exitosa!\n\nRespuesta del servidor:\n${JSON.stringify(data, null, 2)}`);
-            } catch (error) {
-                alert(`❌ Error de conexión:\n\n${error.message}\n\nURL intentada: ${API_BASE}/health`);
-            }
-        }
-        
-        // Función para probar login específico
-        async function testLoginConnection() {
-            try {
-                const response = await fetch(`${API_BASE}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: 'testuser2', password: '123' })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    alert(`✅ Login exitoso!\n\nToken recibido: ${data.token ? 'Sí' : 'No'}\n\nRespuesta completa:\n${JSON.stringify(data, null, 2)}`);
-                } else {
-                    const errorData = await response.json();
-                    alert(`❌ Error en login:\n\nStatus: ${response.status}\nError: ${errorData.error || 'Error desconocido'}`);
-                }
-            } catch (error) {
-                alert(`❌ Error de conexión en login:\n\n${error.message}\n\nURL intentada: ${API_BASE}/api/auth/login`);
-            }
-        }
+
 
         // Auth functions
         function switchTab(tab) {
