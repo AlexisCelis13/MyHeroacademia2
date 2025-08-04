@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8b5cf6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Superhéroes & Mascotas</title>
     <style>
         * {
@@ -15,6 +18,10 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #333;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .hidden {
@@ -109,6 +116,8 @@
 
         .btn {
             width: 100%;
+            min-height: 44px;
+            touch-action: manipulation;
             padding: 0.75rem;
             background: #3b82f6;
             color: white;
@@ -330,6 +339,199 @@
         @media (max-width: 768px) {
             .pet-interface-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            /* Ajustes para móviles */
+            .pet-interface-content {
+                padding: 1rem;
+                margin: 0;
+            }
+            
+            .pet-interface-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .header-info {
+                text-align: center;
+            }
+            
+            .pet-interface-title {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .user-hero-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .logout-button {
+                align-self: center;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .pet-display-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            
+            .modern-pet-container {
+                width: 150px;
+                height: 150px;
+                margin-bottom: 1.5rem;
+            }
+            
+            .dragon-main-body {
+                width: 110px;
+                height: 95px;
+            }
+            
+            .dragon-modern-head {
+                width: 70px;
+                height: 55px;
+            }
+            
+            .stats-card, .actions-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .card-title {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                padding: 0.75rem;
+            }
+            
+            .stat-label {
+                font-size: 0.9rem;
+            }
+            
+            .stat-value {
+                font-size: 1.1rem;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+            
+            .action-btn {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+                min-height: 60px;
+            }
+            
+            /* Ajustes para formularios en móvil */
+            .auth-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            
+            .auth-card {
+                padding: 1.5rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-input {
+                padding: 0.75rem;
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            /* Ajustes para selección de héroes y mascotas */
+            .hero-container, .pet-container {
+                padding: 1rem;
+            }
+            
+            .hero-content, .hero-content {
+                padding: 1rem;
+            }
+            
+            .hero-grid, .pet-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .hero-card, .pet-card {
+                padding: 1rem;
+            }
+            
+            .create-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Ajustes específicos para pantallas muy pequeñas */
+        @media (max-width: 480px) {
+            html {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .pet-interface-content {
+                padding: 0.5rem;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .pet-interface-header {
+                padding: 0.75rem;
+            }
+            
+            .pet-interface-title {
+                font-size: 1.25rem;
+            }
+            
+            .modern-pet-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .dragon-main-body {
+                width: 90px;
+                height: 75px;
+            }
+            
+            .dragon-modern-head {
+                width: 55px;
+                height: 45px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-btn {
+                min-height: 50px;
+                font-size: 0.85rem;
+            }
+            
+            .stats-grid {
+                gap: 0.75rem;
+            }
+            
+            .stat-item {
+                padding: 0.5rem;
             }
         }
 
@@ -858,10 +1060,17 @@
             cursor: pointer;
             transition: all 0.2s;
             transform: scale(1);
+            min-height: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .action-btn:hover {
             transform: scale(1.05);
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
         }
 
         .action-btn.feed {
@@ -1133,12 +1342,13 @@
                 <p class="hero-subtitle">Elige tu superhéroe o crea uno nuevo</p>
             </div>
 
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <button class="create-btn" onclick="showCreateHero()">Crear Nuevo Superhéroe</button>
+            </div>
+
             <div id="heroSelection">
                 <div class="hero-grid">
                     <!-- Los héroes se cargarán dinámicamente desde la base de datos -->
-                </div>
-                <div style="text-align: center;">
-                    <button class="create-btn" onclick="showCreateHero()">Crear Nuevo Superhéroe</button>
                 </div>
             </div>
 
@@ -1418,6 +1628,73 @@
 
 
         // Auth functions
+        // Función para verificar si el usuario está logueado al cargar la página
+        async function checkAuthStatus() {
+            const storedToken = localStorage.getItem('token');
+            if (storedToken) {
+                token = storedToken; // Asignar el token a la variable global
+                try {
+                                            // Primero verificar si el token es válido obteniendo información del usuario
+                        const userResponse = await fetch(`${API_BASE}/api/auth/me`, {
+                            headers: {
+                                'Authorization': `Bearer ${storedToken}`
+                            }
+                        });
+                        
+                        if (userResponse.ok) {
+                            const userData = await userResponse.json();
+                            currentUser = userData;
+                            
+                            // Verificar si tiene mascota
+                            const petResponse = await fetch(`${API_BASE}/api/pets/mi-mascota`, {
+                                headers: {
+                                    'Authorization': `Bearer ${storedToken}`
+                                }
+                            });
+                        
+                        if (petResponse.ok) {
+                            const petData = await petResponse.json();
+                            // Si tiene mascota, mostrar directamente la interfaz
+                            currentPet = {
+                                id: petData.id,
+                                name: petData.name,
+                                alias: petData.alias,
+                                vida: petData.vida,
+                                felicidad: petData.felicidad,
+                                hambre: petData.hambre,
+                                enfermedad: petData.enfermedad,
+                                viva: petData.viva,
+                                isSick: petData.enfermedad ? true : false,
+                                isDead: petData.viva === false,
+                                itemsCustom: petData.itemsCustom || []
+                            };
+                            showPetInterfaceDirect();
+                            return;
+                        } else if (petResponse.status === 404) {
+                            // Si no tiene mascota, mostrar selección de héroes
+                            showHeroSelection();
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error verificando autenticación:', error);
+                }
+            }
+            
+            // Si no hay token o hay error, mostrar login
+            showAuthPage();
+        }
+        
+        // Llamar a checkAuthStatus cuando se carga la página
+        document.addEventListener('DOMContentLoaded', checkAuthStatus);
+        
+        function showAuthPage() {
+            document.getElementById('authPage').classList.remove('hidden');
+            document.getElementById('heroPage').classList.add('hidden');
+            document.getElementById('petPage').classList.add('hidden');
+            document.getElementById('petInterface').classList.add('hidden');
+        }
+        
         function switchTab(tab) {
             const tabs = document.querySelectorAll('.tab');
             const forms = document.querySelectorAll('form');
@@ -1452,7 +1729,8 @@
 
                 if (response.ok) {
                     token = data.token;
-            currentUser = { username };
+                    localStorage.setItem('token', token);
+                    currentUser = { username };
                     
                     console.log('Login response:', data); // Debug log
                     
@@ -1513,7 +1791,8 @@
 
                 if (response.ok) {
                     token = data.token;
-            currentUser = { username, email };
+                    localStorage.setItem('token', token);
+                    currentUser = { username, email };
                     
                     console.log('Register response:', data); // Debug log
                     

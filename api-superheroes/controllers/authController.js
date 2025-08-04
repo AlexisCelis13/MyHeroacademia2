@@ -128,4 +128,32 @@ router.post('/auth/login', async (req, res) => {
   }
 });
 
+// Endpoint para obtener información del usuario actual
+router.get('/auth/me', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Token no proporcionado' });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await userRepository.findById(decoded.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      mascotaId: user.mascotaId
+    });
+  } catch (error) {
+    console.error('Error obteniendo información del usuario:', error);
+    res.status(401).json({ error: 'Token inválido' });
+  }
+});
+
 export default router; 
